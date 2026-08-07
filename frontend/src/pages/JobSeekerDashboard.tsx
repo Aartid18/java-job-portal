@@ -1,118 +1,408 @@
-import { useState } from 'react';
-import { Briefcase, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Briefcase,
+  CheckCircle2,
+  FileText,
+  Sparkles,
+  Target,
+  TrendingUp,
+} from 'lucide-react';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import PressButton from '../components/PressButton';
+import { EmptyState, Skeleton, StatCard } from '../components/ui';
+import { getErrorMessage } from '../lib/api';
+import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
+
+function useCountUp(target: number, enabled: boolean) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!enabled) return;
+    let frame = 0;
+    const start = performance.now();
+    const duration = 700;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(Math.round(target * eased));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [target, enabled]);
+  return value;
+}
+
+function ProgressRing({ percent, label }: { percent: number; label: string }) {
+  const animated = useCountUp(percent, true);
+  const r = 40;
+  const c = 2 * Math.PI * r;
+  const offset = c - (animated / 100) * c;
+
+  return (
+    <div className="flex flex-col items-center text-center gap-4">
+      <div className="relative w-28 h-28 flex items-center justify-center">
+        <svg className="absolute inset-0 -rotate-90" viewBox="0 0 96 96" aria-hidden>
+          <circle cx="48" cy="48" r={r} fill="none" stroke="rgb(79 70 229 / 0.15)" strokeWidth="8" />
+          <circle
+            cx="48"
+            cy="48"
+            r={r}
+            fill="none"
+            stroke="url(#readinessGrad)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={c}
+            strokeDashoffset={offset}
+            style={{ transition: 'stroke-dashoffset 0.2s linear' }}
+          />
+          <defs>
+            <linearGradient id="readinessGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#4F46E5" />
+              <stop offset="100%" stopColor="#7C3AED" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span className="relative text-2xl font-bold font-display text-brand">{animated}</span>
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-h3 text-ink">{label}</h3>
+      </div>
+    </div>
+  );
+}
 
 export default function JobSeekerDashboard() {
-  const [applied, setApplied] = useState(false);
+  const [data, setData] = useState<CandidateDashboard | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await candidateApi.getDashboard();
+        if (!cancelled) setData(res.data);
+      } catch (err) {
+        if (!cancelled) setError(getErrorMessage(err, 'Failed to load dashboard'));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const readinessChart = useMemo(() => {
+    if (!data?.readinessBreakdown) return [];
+    return Object.entries(data.readinessBreakdown).map(([name, score]) => ({ name, score }));
+  }, [data]);
+
+  const statusChart = useMemo(() => {
+    if (!data?.applicationsByStatus) return [];
+    return Object.entries(data.applicationsByStatus).map(([status, count]) => ({
+      status,
+      count,
+    }));
+  }, [data]);
+
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
+        <Skeleton className="h-10 w-64" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
+        </div>
+        <Skeleton className="h-64" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-16">
+        <EmptyState
+          title="Dashboard unavailable"
+          description={error || 'Could not load your career metrics.'}
+          actionLabel="Retry"
+          onAction={() => window.location.reload()}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
-      <header className="reveal space-y-2">
-        <h1 className="text-h1 text-ink">Welcome back, Alex</h1>
-        <p className="text-ink-muted">Your application health and top matches.</p>
+      <header className="reveal flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="space-y-2">
+          <p className="text-label">Career workspace</p>
+          <h1 className="text-h1 text-ink">
+            Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}
+          </h1>
+          <p className="text-ink-muted">
+            {data.preferredRole
+              ? `Targeting ${data.preferredRole}${data.location ? ` · ${data.location}` : ''}`
+              : 'Your live career readiness and application signal.'}
+          </p>
+        </div>
+        <Link to="/onboarding">
+          <PressButton variant="ghost">Edit profile</PressButton>
+        </Link>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="ui-panel p-6 flex flex-col items-center text-center gap-5 reveal reveal-delay-1">
-          <div className="relative w-24 h-24 rounded-full flex items-center justify-center bg-brand-muted">
-            <svg className="absolute inset-0 -rotate-90" viewBox="0 0 96 96" aria-hidden>
-              <circle cx="48" cy="48" r="40" fill="none" stroke="rgb(79 70 229 / 0.15)" strokeWidth="8" />
-              <circle
-                cx="48"
-                cy="48"
-                r="40"
-                fill="none"
-                stroke="#4F46E5"
-                strokeWidth="8"
-                strokeLinecap="round"
-                strokeDasharray="251"
-                strokeDashoffset="37.65"
-              />
-            </svg>
-            <span className="relative text-2xl font-bold font-display text-brand">85%</span>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="reveal reveal-delay-1">
+          <StatCard
+            icon={<Target size={22} />}
+            label="Career Readiness"
+            value={`${data.careerReadinessScore}`}
+          />
+        </div>
+        <div className="reveal reveal-delay-2">
+          <StatCard
+            icon={<TrendingUp size={22} />}
+            label="Profile Strength"
+            value={`${data.profileCompletionPercent}%`}
+          />
+        </div>
+        <div className="reveal reveal-delay-3">
+          <StatCard
+            icon={<FileText size={22} />}
+            label="Resume Score"
+            value={`${data.resumeScore}`}
+          />
+        </div>
+        <div className="reveal reveal-delay-4">
+          <StatCard
+            icon={<Briefcase size={22} />}
+            label="Applications"
+            value={`${data.applicationCount}`}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="ui-panel p-6 reveal space-y-4">
+          <ProgressRing percent={data.careerReadinessScore} label="Career Readiness" />
+          <p className="text-xs text-ink-faint text-center">{data.readinessNote}</p>
           <div className="space-y-2">
-            <h3 className="text-h3 text-ink">Application Health</h3>
-            <p className="text-sm text-ink-muted">
-              Looking strong. Add one more project to reach 90%.
-            </p>
+            {Object.entries(data.readinessBreakdown).map(([key, val]) => (
+              <div key={key} className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-ink-muted">{key}</span>
+                  <span className="font-semibold text-ink">{val}</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${val}%`,
+                      background: 'var(--gradient-primary)',
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="ui-panel p-6 md:col-span-2 reveal reveal-delay-2 space-y-5">
-          <h3 className="text-h2 text-ink flex items-center gap-2">
-            <Briefcase className="text-brand" size={22} /> Top Job Match
-          </h3>
-          <div className="rounded-[12px] p-5 bg-surface-2/60 border border-line space-y-4">
-            <div className="flex justify-between items-start gap-4">
-              <div className="space-y-1">
-                <h4 className="text-h3 text-ink">Senior Java Backend Developer</h4>
-                <p className="text-sm text-ink-muted">TechCorp Inc. · San Francisco, CA</p>
-              </div>
-              <span className="ui-chip ui-chip--success shrink-0">92% Match</span>
-            </div>
-
+        <div className="ui-panel p-6 lg:col-span-2 reveal reveal-delay-1 space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="text-brand" size={20} />
+            <h2 className="text-h2 text-ink">Your next best action</h2>
+          </div>
+          {data.nextActions.length === 0 ? (
+            <p className="text-sm text-ink-muted">You&apos;re in good shape. Keep applying and refining.</p>
+          ) : (
             <div className="space-y-3">
-              <h5 className="text-sm font-semibold text-ink-muted">Skill Gap Analysis</h5>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-ink">
-                  <CheckCircle2 className="text-success shrink-0" size={16} />
-                  Matched: Java, Spring Boot, MySQL, REST APIs
+              {data.nextActions.map((action) => (
+                <div
+                  key={action.title}
+                  className="rounded-[12px] border border-line bg-surface-2/50 p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`ui-chip text-xs ${
+                          action.priority === 'high'
+                            ? 'ui-chip--warn'
+                            : action.priority === 'medium'
+                              ? 'ui-chip--info'
+                              : 'bg-surface text-ink-muted'
+                        }`}
+                      >
+                        {action.priority}
+                      </span>
+                      <h3 className="font-semibold text-ink">{action.title}</h3>
+                    </div>
+                    <p className="text-sm text-ink-muted">{action.description}</p>
+                  </div>
+                  <Link to={action.ctaPath}>
+                    <PressButton variant="primary" className="!min-h-10 !px-4 !py-2 text-sm whitespace-nowrap">
+                      {action.ctaLabel}
+                    </PressButton>
+                  </Link>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-ink">
-                  <AlertCircle className="text-warning shrink-0" size={16} />
-                  Missing Critical: Docker
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="ui-panel p-6 reveal space-y-4">
+          <h2 className="text-h2 text-ink">Readiness breakdown</h2>
+          {readinessChart.length === 0 ? (
+            <EmptyState title="No readiness data" description="Complete onboarding to populate this chart." />
+          ) : (
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={readinessChart} margin={{ top: 8, right: 8, left: 0, bottom: 24 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-line)" />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--color-ink-muted)' }} interval={0} angle={-20} textAnchor="end" height={60} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: 'var(--color-ink-muted)' }} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--color-surface)',
+                      border: '1px solid var(--color-line)',
+                      borderRadius: 12,
+                    }}
+                  />
+                  <Bar dataKey="score" fill="#4F46E5" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        <div className="ui-panel p-6 reveal reveal-delay-1 space-y-4">
+          <h2 className="text-h2 text-ink">Application funnel</h2>
+          {statusChart.length === 0 ? (
+            <EmptyState
+              title="No applications yet"
+              description="Your career journey starts here. Applications will appear as you apply to roles."
+              actionLabel="Improve profile"
+              onAction={() => {
+                window.location.href = '/onboarding';
+              }}
+              icon={<Briefcase size={28} />}
+            />
+          ) : (
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={statusChart}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-line)" />
+                  <XAxis dataKey="status" tick={{ fontSize: 11, fill: 'var(--color-ink-muted)' }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: 'var(--color-ink-muted)' }} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--color-surface)',
+                      border: '1px solid var(--color-line)',
+                      borderRadius: 12,
+                    }}
+                  />
+                  <Bar dataKey="count" fill="#06B6D4" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+          <div className="flex gap-4 text-sm text-ink-muted">
+            <span>Interviews: <strong className="text-ink">{data.interviewCount}</strong></span>
+            <span>Offers: <strong className="text-ink">{data.offerCount}</strong></span>
+            <span>Open jobs: <strong className="text-ink">{data.openJobsCount}</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="ui-panel p-6 reveal space-y-4">
+          <h2 className="text-h2 text-ink">Skills ({data.skillCount})</h2>
+          {data.skills.length === 0 ? (
+            <EmptyState
+              title="No skills yet"
+              description="Add skills during onboarding to power matching."
+              actionLabel="Add skills"
+              onAction={() => {
+                window.location.href = '/onboarding';
+              }}
+            />
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {data.skills.map((s) => (
+                <span key={s.name} className="ui-chip ui-chip--info">
+                  {s.name} · {s.level}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="ui-panel p-6 reveal reveal-delay-1 space-y-5">
+          <h2 className="text-h2 text-ink">Application journey</h2>
+          {data.recentApplications.length === 0 ? (
+            <div className="space-y-3 text-sm text-ink-muted">
+              <p>No application history yet.</p>
+              <div className="flex items-start gap-3 opacity-60">
+                <div className="w-8 h-8 rounded-full bg-surface-2 border border-line flex items-center justify-center">
+                  <CheckCircle2 size={14} />
                 </div>
-                <div className="flex items-center gap-2 text-sm text-ink-muted">
-                  <AlertCircle className="text-ink-faint shrink-0" size={16} />
-                  Missing Optional: Kubernetes
+                <div>
+                  <p className="font-medium text-ink-faint">Applied</p>
+                  <p className="text-xs">Waiting for your first application</p>
                 </div>
               </div>
             </div>
-
-            <PressButton variant="soft" onClick={() => setApplied(true)}>
-              {applied ? 'Application Sent ✓' : 'Apply Now'}
-            </PressButton>
-          </div>
+          ) : (
+            <div className="relative space-y-5">
+              <div className="absolute top-4 left-4 h-[calc(100%-1rem)] w-px bg-line" />
+              {data.recentApplications.map((app) => (
+                <div key={app.id} className="timeline-item flex items-start gap-4 relative">
+                  <div className="timeline-dot w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center z-10">
+                    <FileText size={14} />
+                  </div>
+                  <div className="space-y-1 pt-0.5">
+                    <h4 className="font-semibold text-ink">{app.jobTitle}</h4>
+                    <p className="text-sm text-ink-muted">
+                      {app.companyOrPoster} · {app.status}
+                      {app.matchScore != null ? ` · ${Math.round(app.matchScore)}% match` : ''}
+                    </p>
+                    {app.appliedAt && <p className="text-xs text-ink-faint">{app.appliedAt}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="ui-panel p-6 reveal reveal-delay-3 space-y-5">
-        <h3 className="text-h2 text-ink">Application Journey</h3>
-        <div className="relative">
-          <div className="absolute top-4 left-4 h-[calc(100%-1rem)] w-px bg-line" />
-
-          <div className="timeline-item flex items-start gap-4 mb-6 relative">
-            <div className="timeline-dot w-8 h-8 rounded-full bg-brand text-surface flex items-center justify-center z-10">
-              <CheckCircle2 size={16} />
-            </div>
-            <div className="space-y-1 pt-0.5">
-              <h4 className="font-semibold text-ink">Applied for Software Engineer at InnovateTech</h4>
-              <p className="text-sm text-ink-muted">2 days ago</p>
-            </div>
-          </div>
-
-          <div className="timeline-item flex items-start gap-4 mb-6 relative">
-            <div className="timeline-dot w-8 h-8 rounded-full bg-brand text-surface flex items-center justify-center z-10">
-              <FileText size={16} />
-            </div>
-            <div className="space-y-1 pt-0.5">
-              <h4 className="font-semibold text-ink">Resume Viewed</h4>
-              <p className="text-sm text-ink-muted">1 day ago · Recruiter has seen your profile.</p>
-            </div>
-          </div>
-
-          <div className="timeline-item flex items-start gap-4 relative">
-            <div className="timeline-dot w-8 h-8 rounded-full bg-surface-2 text-ink-faint border border-line flex items-center justify-center z-10">
-              <Briefcase size={16} />
-            </div>
-            <div className="space-y-1 pt-0.5">
-              <h4 className="font-semibold text-ink-faint">Interview</h4>
-              <p className="text-sm text-ink-faint">Pending…</p>
-            </div>
-          </div>
+      {data.profileMissing.length > 0 && (
+        <div className="ui-panel p-6 reveal space-y-3">
+          <h2 className="text-h2 text-ink">Profile gaps</h2>
+          <ul className="space-y-2">
+            {data.profileMissing.map((item) => (
+              <li key={item} className="text-sm text-ink-muted flex gap-2">
+                <span className="text-warning">○</span> {item}
+              </li>
+            ))}
+          </ul>
+          <Link to="/onboarding">
+            <PressButton variant="soft">Complete missing sections</PressButton>
+          </Link>
         </div>
-      </div>
+      )}
     </div>
   );
 }
