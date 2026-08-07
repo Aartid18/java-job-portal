@@ -4,6 +4,7 @@ import AtmosphereBackground from './components/AtmosphereBackground';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
 import AuthOnlyRoute from './components/AuthOnlyRoute';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Dashboard from './pages/Dashboard';
 import JobSeekerDashboard from './pages/JobSeekerDashboard';
 import RecruiterDashboard from './pages/RecruiterDashboard';
@@ -63,13 +64,15 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <div className="min-h-screen flex flex-col relative">
-          <AtmosphereBackground />
-          <Navbar />
-          <AppRoutes />
-        </div>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col relative">
+            <AtmosphereBackground />
+            <Navbar />
+            <AppRoutes />
+          </div>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

@@ -16,13 +16,13 @@ export default function JobSeekerDashboard() {
         <div className="ui-panel p-6 flex flex-col items-center text-center gap-5 reveal reveal-delay-1">
           <div className="relative w-24 h-24 rounded-full flex items-center justify-center bg-brand-muted">
             <svg className="absolute inset-0 -rotate-90" viewBox="0 0 96 96" aria-hidden>
-              <circle cx="48" cy="48" r="40" fill="none" stroke="rgb(11 95 86 / 0.15)" strokeWidth="8" />
+              <circle cx="48" cy="48" r="40" fill="none" stroke="rgb(79 70 229 / 0.15)" strokeWidth="8" />
               <circle
                 cx="48"
                 cy="48"
                 r="40"
                 fill="none"
-                stroke="#0B5F56"
+                stroke="#4F46E5"
                 strokeWidth="8"
                 strokeLinecap="round"
                 strokeDasharray="251"

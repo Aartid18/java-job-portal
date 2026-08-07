@@ -24,7 +24,9 @@ export default function Dashboard() {
       <div className="max-w-3xl mx-auto w-full py-16 sm:py-24">
         <p className="reveal text-label mb-6">AIJobPortal</p>
 
-        <h1 className="reveal reveal-delay-1 text-display mb-6">Your Career Operating System</h1>
+        <h1 className="reveal reveal-delay-1 text-display text-display-gradient mb-6">
+          Your Career Operating System
+        </h1>
 
         <p className="reveal reveal-delay-2 font-display text-xl sm:text-2xl font-semibold text-ink tracking-tight mb-4 max-w-xl">
           Understand where you stand. Know which roles fit. Improve with clarity.

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Users, TrendingUp, Search, Briefcase } from 'lucide-react';
 import PressButton from '../components/PressButton';
+import { EmptyState, StatCard } from '../components/ui';
 
 const candidates = [
   {
@@ -44,24 +45,15 @@ export default function RecruiterDashboard() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          { icon: Briefcase, label: 'Active Jobs', value: '12', tone: 'bg-brand-muted text-brand' },
-          { icon: Users, label: 'Total Applications', value: '348', tone: 'bg-surface-2 text-ink' },
-          { icon: TrendingUp, label: 'Time-to-Hire', value: '14 Days', tone: 'bg-brand-muted text-brand' },
-        ].map((stat, i) => (
-          <div
-            key={stat.label}
-            className={`ui-panel p-6 flex items-center gap-4 reveal reveal-delay-${i + 1}`}
-          >
-            <div className={`w-12 h-12 rounded-[12px] ${stat.tone} flex items-center justify-center`}>
-              <stat.icon size={22} />
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-ink-muted font-medium">{stat.label}</p>
-              <h3 className="text-2xl font-bold font-display text-ink">{stat.value}</h3>
-            </div>
-          </div>
-        ))}
+        <div className="reveal reveal-delay-1">
+          <StatCard icon={<Briefcase size={22} />} label="Active Jobs" value="12" />
+        </div>
+        <div className="reveal reveal-delay-2">
+          <StatCard icon={<Users size={22} />} label="Total Applications" value="348" />
+        </div>
+        <div className="reveal reveal-delay-3">
+          <StatCard icon={<TrendingUp size={22} />} label="Time-to-Hire" value="14 Days" />
+        </div>
       </div>
 
       <div className="ui-panel p-6 reveal reveal-delay-4 space-y-6">
@@ -74,7 +66,7 @@ export default function RecruiterDashboard() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search candidates…"
-              className="ui-input"
+              className="ui-input ui-input--with-icon"
               aria-label="Search candidates"
             />
           </div>
@@ -109,10 +101,12 @@ export default function RecruiterDashboard() {
             </div>
           ))}
           {filtered.length === 0 && (
-            <div className="text-center py-12 space-y-2">
-              <p className="font-display text-lg font-semibold text-ink">No candidates match</p>
-              <p className="text-sm text-ink-muted">Try a different skill or name.</p>
-            </div>
+            <EmptyState
+              title="No candidates match"
+              description="Try a different skill or name."
+              actionLabel="Clear search"
+              onAction={() => setQuery('')}
+            />
           )}
         </div>
       </div>
