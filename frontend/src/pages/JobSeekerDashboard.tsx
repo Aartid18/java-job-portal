@@ -388,6 +388,20 @@ export default function JobSeekerDashboard() {
         </div>
       </div>
 
+        <div className="flex flex-wrap gap-2 reveal">
+          {[
+            ['/candidate/jobs', 'Browse jobs'],
+            ['/candidate/applications', 'Applications'],
+            ['/candidate/resume-builder', 'Resume builder'],
+            ['/candidate/resume-analyzer', 'Analyzer'],
+            ['/candidate/skill-gap', 'Skill gap'],
+          ].map(([to, label]) => (
+            <Link key={to} to={to} className="press-btn press-btn--soft !min-h-10 !px-4 !py-2 text-sm">
+              {label}
+            </Link>
+          ))}
+        </div>
+
       {data.profileMissing.length > 0 && (
         <div className="ui-panel p-6 reveal space-y-3">
           <h2 className="text-h2 text-ink">Profile gaps</h2>

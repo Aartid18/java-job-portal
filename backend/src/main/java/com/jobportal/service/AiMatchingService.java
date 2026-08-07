@@ -1,16 +1,19 @@
 package com.jobportal.service;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AiMatchingService {
+
+    private final MatchingService matchingService;
+
     public Double calculateCompatibilityScore(String candidateSkills, String jobRequiredSkills) {
-        // AI logic placeholder: Match skills, experience, location
-        // Explainable Ranking
-        return 87.5;
+        return matchingService.calculateCompatibilityScore(candidateSkills, jobRequiredSkills);
     }
-    
+
     public String generateSkillGapAnalysis(String candidateSkills, String jobRequiredSkills) {
-        // Generates the "WHAT YOU ARE MISSING" map
-        return "{\"missingCritical\": [\"Docker\"], \"missingOptional\": [\"Kubernetes\"]}";
+        return matchingService.generateSkillGapAnalysis(candidateSkills, jobRequiredSkills);
     }
 }

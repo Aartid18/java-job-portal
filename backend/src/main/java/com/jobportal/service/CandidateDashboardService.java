@@ -162,8 +162,8 @@ public class CandidateDashboardService {
             actions.add(CandidateDashboardResponse.NextAction.builder()
                     .title("Upload or build a resume")
                     .description("A resume unlocks stronger matching and ATS-style analysis.")
-                    .ctaLabel("Add resume")
-                    .ctaPath("/onboarding")
+                    .ctaLabel("Open builder")
+                    .ctaPath("/candidate/resume-builder")
                     .priority("high")
                     .build());
         }
@@ -183,15 +183,23 @@ public class CandidateDashboardService {
                     .title("Explore open roles")
                     .description(openJobs + " open job" + (openJobs == 1 ? "" : "s") + " are available to browse.")
                     .ctaLabel("Browse jobs")
-                    .ctaPath("/candidate")
+                    .ctaPath("/candidate/jobs")
                     .priority("medium")
                     .build());
         } else if (applicationCount == 0) {
             actions.add(CandidateDashboardResponse.NextAction.builder()
                     .title("Your career journey starts here")
-                    .description("No applications yet. Job discovery ships in a later phase — keep your profile sharp.")
+                    .description("No applications yet. Keep your profile sharp and check back for roles.")
                     .ctaLabel("Improve profile")
                     .ctaPath("/onboarding")
+                    .priority("low")
+                    .build());
+        } else {
+            actions.add(CandidateDashboardResponse.NextAction.builder()
+                    .title("Review skill gaps")
+                    .description("Compare your skills against open roles to prioritize learning.")
+                    .ctaLabel("Skill gap")
+                    .ctaPath("/candidate/skill-gap")
                     .priority("low")
                     .build());
         }

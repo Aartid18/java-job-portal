@@ -15,6 +15,14 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import OnboardingPage from './pages/OnboardingPage';
+import ResumeBuilderPage from './pages/ResumeBuilderPage';
+import ResumeAnalyzerPage from './pages/ResumeAnalyzerPage';
+import JobBrowsePage from './pages/JobBrowsePage';
+import JobDetailPage from './pages/JobDetailPage';
+import ApplicationsPage from './pages/ApplicationsPage';
+import SkillGapPage from './pages/SkillGapPage';
+import AdminPage from './pages/AdminPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 function AppRoutes() {
   const location = useLocation();
@@ -47,10 +55,74 @@ function AppRoutes() {
             }
           />
           <Route
+            path="/candidate/resume-builder"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <ResumeBuilderPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/resume-analyzer"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <ResumeAnalyzerPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/jobs"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <JobBrowsePage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/jobs/:id"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <JobDetailPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/applications"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <ApplicationsPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/skill-gap"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <SkillGapPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/notifications"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN', 'RECRUITER']}>
+                <NotificationsPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
             path="/recruiter"
             element={
               <RoleProtectedRoute roles={['RECRUITER', 'ADMIN']}>
                 <RecruiterDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <RoleProtectedRoute roles={['ADMIN']}>
+                <AdminPage />
               </RoleProtectedRoute>
             }
           />

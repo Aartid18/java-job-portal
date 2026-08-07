@@ -1,111 +1,112 @@
-# AI Job Portal SaaS 🚀
+# AI Job Portal
 
-A production-ready Full-Stack AI Job Portal built with Spring Boot and React.
+Full-stack career platform: Spring Boot 3 (Java 17) + React 19 / Vite / TypeScript / Tailwind.
 
-## 🌟 Key Features
+Live frontend: [java-job-portal.vercel.app](https://java-job-portal.vercel.app)  
+Repo: [github.com/Aartid18/java-job-portal](https://github.com/Aartid18/java-job-portal)
 
-- **Smart Resume Analysis**: Extracts skills from uploaded PDFs and compares them against job requirements.
-- **Explainable Candidate Ranking**: Ranks candidates and provides human-readable explanations (e.g., "+ Strong Java", "- Missing Docker").
-- **Skill Gap Map**: Shows candidates precisely what skills they are missing for a given job.
-- **Application Health Score**: Evaluates the probability of an application's success based on AI models.
-- **Application Journey Tracker**: Visual pipeline tracking from Applied to Hired.
-- **Role-Based Access Control**: Separate portals for Job Seekers, Recruiters, and Admins.
+## Features
 
-## 🛠 Tech Stack
+- JWT auth (register, verify, login, refresh, forgot/reset password)
+- Role-based portals: job seeker, recruiter, admin
+- Candidate onboarding with real profile completion
+- Resume builder (versions + templates) and ATS-style analyzer
+- Job postings, browse/apply, Jaccard skill matching + skill-gap text
+- Recruiter hub: post jobs, ranked applicants, status updates
+- Notifications on application status / interview schedule
+- Interview scheduling API
+- Admin overview counts
+- Optional demo seed data
 
-**Backend**: Java 17+, Spring Boot 3, Spring Security, JWT, Hibernate/JPA, MySQL, Maven, OpenAPI (Swagger), Apache PDFBox.
-**Frontend**: React 18 (TypeScript), Vite, Tailwind CSS, React Router, Lucide React, Axios.
+## Stack
 
-## 🏗 Architecture
+| Layer | Tech |
+|--------|------|
+| Backend | Spring Boot 3.2, Security + JWT, JPA, MySQL, PDFBox, OpenAPI |
+| Frontend | React 19, TypeScript, Vite, Tailwind 4, Recharts, Axios |
 
-The backend follows a clean Layered Architecture (Controller → Service → Repository) using DTO patterns and global exception handling. Passwords are mathematically hashed using BCrypt, and sessions are stateless using JWT access and refresh tokens.
+## Local setup
 
----
+### Prerequisites
 
-## 🚀 Setup Instructions
+- JDK 17+, Maven 3.9+, Node 20+, MySQL 8+
 
-### 1. Database Setup
-1. Install MySQL and start the server.
-2. Create a database named `job_portal`:
-   ```sql
-   CREATE DATABASE job_portal;
-   ```
-3. Update `backend/src/main/resources/application.properties` with your MySQL credentials.
+### Database
 
-### 2. Backend Setup
-1. Navigate to the `backend` folder: `cd backend`
-2. Build the project: `mvn clean install`
-3. Run the application: `mvn spring-boot:run`
-4. The backend will run on `http://localhost:8080`.
-5. Access the Swagger API Documentation at: `http://localhost:8080/swagger-ui/index.html`
-
-### 3. Frontend Setup
-1. Navigate to the `frontend` folder: `cd frontend`
-2. Install dependencies: `npm install`
-3. Start the dev server: `npm run dev`
-4. Access the UI at `http://localhost:5173`
-
----
-
-## 🗄 Database ER Diagram
-
-```mermaid
-erDiagram
-    User ||--o{ Application : submits
-    User {
-        Long id
-        String email
-        String password
-        Role role
-        boolean isActive
-    }
-    
-    User ||--|| CandidateProfile : has
-    CandidateProfile {
-        Long id
-        String fullName
-        String skills
-        String expectedSalary
-    }
-
-    User ||--|| RecruiterProfile : has
-    RecruiterProfile {
-        Long id
-        String fullName
-        String position
-    }
-
-    Company ||--o{ RecruiterProfile : employs
-    Company {
-        Long id
-        String name
-        String website
-        boolean isVerified
-    }
-
-    RecruiterProfile ||--o{ Job : posts
-    Job {
-        Long id
-        String title
-        String requiredSkills
-        String status
-    }
-
-    CandidateProfile ||--o{ Application : applies
-    Job ||--o{ Application : receives
-    Application {
-        Long id
-        String status
-        Double compatibilityScore
-        String skillGapAnalysis
-    }
+```sql
+CREATE DATABASE job_portal;
 ```
 
-## 🔐 Security & Fraud Controls
-- **JWT Authentication**: Secure stateless auth with short-lived tokens.
-- **RBAC**: Endpoints secured via `@PreAuthorize`.
-- **Fraud Controls**: Jobs with suspicious links or unverified companies are flagged for Admin Review before being published.
+Copy `backend/.env.example` if needed. Defaults in `application.properties`:
 
-## 📄 Postman & Testing
-- Unit and Integration tests are located in `backend/src/test`.
-- Postman Collection can be derived directly from the OpenAPI/Swagger specification at `http://localhost:8080/v3/api-docs`.
+- DB: `root` / `root` on `localhost:3306/job_portal`
+- `app.seed=true` seeds demo users when the DB has no users
+
+### Backend
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+API: `http://localhost:8080` · Swagger: `/swagger-ui/index.html`
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+cp .env.example .env   # VITE_API_URL=http://localhost:8080
+npm run dev
+```
+
+UI: `http://localhost:5173`
+
+### Demo accounts (when seed runs)
+
+| Email | Role | Password |
+|--------|------|----------|
+| `admin@aijobportal.local` | ADMIN | `SeedPass1!` |
+| `seeker@aijobportal.local` | JOB_SEEKER | `SeedPass1!` |
+| `recruiter@aijobportal.local` | RECRUITER | `SeedPass1!` |
+
+Turn seed off in production: `APP_SEED=false`.
+
+## Deploy
+
+**Vercel:** set Root Directory to `frontend` (not repo root). Set `VITE_API_URL` to your hosted backend URL.
+
+**Backend:** deploy separately (Railway, Render, VPS, etc.) with MySQL, `JWT_SECRET`, `CORS_ORIGIN`, `FRONTEND_URL`, `APP_SEED=false`.
+
+## Main routes
+
+| Path | Who |
+|------|-----|
+| `/login`, `/register` | Public |
+| `/onboarding` | Authenticated |
+| `/candidate` | Seeker dashboard |
+| `/candidate/jobs`, `/candidate/applications` | Browse & pipeline |
+| `/candidate/resume-builder`, `/candidate/resume-analyzer` | Resumes |
+| `/candidate/skill-gap` | Skill comparison |
+| `/recruiter` | Jobs + ranked applicants |
+| `/admin` | Platform counts |
+
+## API map (auth required unless noted)
+
+- `POST/GET /api/auth/**` — auth flows
+- `GET/PUT /api/candidate/onboarding/**` — profile wizard
+- `GET /api/candidate/dashboard` — readiness metrics
+- `CRUD /api/candidate/resumes` — resume versions + analyze
+- `GET /api/jobs` — public open jobs
+- `CRUD /api/recruiter/jobs` — recruiter postings
+- `POST/GET /api/candidate/applications` — apply / list
+- `GET/PATCH /api/recruiter/applications` — review / status
+- `GET/PATCH /api/notifications` — inbox
+- `POST/GET /api/recruiter/interviews`, `GET /api/candidate/interviews`
+- `GET /api/admin/overview` — admin only
+
+## Notes
+
+- Matching and resume scoring are **heuristic** (skill overlap / keyword rules), not LLM guarantees.
+- Dev mode may expose verification tokens when `DEV_EXPOSE_TOKENS=true` (disable in production).
+- Uploads land under `UPLOAD_DIR` (default `uploads/`).

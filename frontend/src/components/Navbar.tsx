@@ -14,11 +14,31 @@ export default function Navbar() {
 
   const seekerLinks = [
     { to: '/candidate', label: 'Dashboard' },
+    { to: '/candidate/jobs', label: 'Jobs' },
+    { to: '/candidate/applications', label: 'Applications' },
+    { to: '/candidate/resume-builder', label: 'Resume' },
+    { to: '/candidate/resume-analyzer', label: 'Analyzer' },
+    { to: '/candidate/skill-gap', label: 'Skill gap' },
+    { to: '/candidate/notifications', label: 'Alerts' },
     { to: '/onboarding', label: 'Profile' },
   ];
-  const recruiterLinks = [{ to: '/recruiter', label: 'Recruiter Hub' }];
+  const recruiterLinks = [
+    { to: '/recruiter', label: 'Recruiter Hub' },
+    { to: '/candidate/notifications', label: 'Alerts' },
+  ];
+  const adminLinks = [
+    { to: '/admin', label: 'Admin' },
+    { to: '/recruiter', label: 'Recruiter' },
+    { to: '/candidate', label: 'Candidate' },
+  ];
   const roleLinks =
-    user?.role === 'JOB_SEEKER' ? seekerLinks : user?.role === 'RECRUITER' ? recruiterLinks : [];
+    user?.role === 'JOB_SEEKER'
+      ? seekerLinks
+      : user?.role === 'RECRUITER'
+        ? recruiterLinks
+        : user?.role === 'ADMIN'
+          ? adminLinks
+          : [];
 
   const close = () => setOpen(false);
 

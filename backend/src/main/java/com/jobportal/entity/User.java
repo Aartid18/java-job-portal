@@ -39,7 +39,6 @@ public class User {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         isActive = true;
-        onboardingCompleted = false;
     }
 
     @PreUpdate
