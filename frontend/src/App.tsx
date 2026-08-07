@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import AnimatedBackground from './components/AnimatedBackground';
+import AtmosphereBackground from './components/AtmosphereBackground';
 import Dashboard from './pages/Dashboard';
 import JobSeekerDashboard from './pages/JobSeekerDashboard';
 import RecruiterDashboard from './pages/RecruiterDashboard';
@@ -25,7 +25,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col relative">
-        <AnimatedBackground />
+        <AtmosphereBackground />
         <Navbar />
         <AppRoutes />
       </div>
