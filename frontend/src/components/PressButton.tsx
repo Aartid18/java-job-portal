@@ -9,6 +9,7 @@ export default function PressButton({
   className = '',
   onClick,
   children,
+  type = 'button',
   ...props
 }: PressButtonProps) {
   const ref = useRef<HTMLButtonElement>(null);
@@ -32,7 +33,7 @@ export default function PressButton({
   return (
     <button
       ref={ref}
-      type="button"
+      type={type}
       className={`press-btn press-btn--${variant} ${className}`}
       onClick={handleClick}
       {...props}

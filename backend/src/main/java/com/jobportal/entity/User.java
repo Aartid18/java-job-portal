@@ -28,6 +28,10 @@ public class User {
     private boolean isEmailVerified;
     private boolean isActive;
 
+    /** Set true after multi-step onboarding (Phase 3). */
+    @Builder.Default
+    private boolean onboardingCompleted = false;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -35,6 +39,7 @@ public class User {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         isActive = true;
+        onboardingCompleted = false;
     }
 
     @PreUpdate
