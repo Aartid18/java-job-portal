@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Briefcase, Search, Users } from 'lucide-react';
 import PressButton from '../components/PressButton';
+import LiveActivityFeed from '../components/LiveActivityFeed';
+import LiveDot from '../components/LiveDot';
 import { EmptyState, Skeleton, StatCard } from '../components/ui';
 import { getErrorMessage } from '../lib/api';
 import { applicationsApi, type Application } from '../lib/applicationsApi';
 import { jobsApi, type Job } from '../lib/jobsApi';
 import { api } from '../lib/api';
+import { useLivePoll } from '../hooks/useLivePoll';
 
 const STATUSES = ['APPLIED', 'SHORTLISTED', 'INTERVIEW', 'ASSESSMENT', 'OFFER', 'HIRED', 'REJECTED'];
 
@@ -44,6 +47,17 @@ export default function RecruiterDashboard() {
   useEffect(() => {
     void load();
   }, []);
+
+  // Keep applicant list live without full-page reload
+  useLivePoll(
+    async () => {
+      const a = await applicationsApi.listForRecruiter();
+      setApps(a.data);
+      return a.data;
+    },
+    15_000,
+    !loading
+  );
 
   const filteredApps = useMemo(() => {
     let list = apps;
@@ -121,13 +135,18 @@ export default function RecruiterDashboard() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
       <header className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-5">
         <div className="space-y-2">
-          <h1 className="text-h1 text-ink">Recruiter Hub</h1>
-          <p className="text-ink-muted">Post roles and review ranked applicants.</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-h1 text-ink">Recruiter Hub</h1>
+            <LiveDot />
+          </div>
+          <p className="text-ink-muted">Post roles and review ranked applicants — list auto-syncs.</p>
         </div>
         <PressButton variant="primary" onClick={() => setShowForm((v) => !v)}>
           {showForm ? 'Cancel' : 'Post New Job'}
         </PressButton>
       </header>
+
+      <LiveActivityFeed mode="recruiter" />
 
       {error && <p className="text-sm text-danger" role="alert">{error}</p>}
 

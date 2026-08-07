@@ -1,38 +1,30 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PressButton from '../components/PressButton';
+import LiveDot from '../components/LiveDot';
 import { EmptyState, Skeleton } from '../components/ui';
-import { getErrorMessage } from '../lib/api';
+import { useLivePoll } from '../hooks/useLivePoll';
 import { jobsApi, type Job } from '../lib/jobsApi';
 
 export default function JobBrowsePage() {
-  const [jobs, setJobs] = useState<Job[]>([]);
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [q, setQ] = useState('');
 
+  const { data, loading, error, updatedAt, refresh } = useLivePoll(
+    async () => {
+      const res = await jobsApi.listOpen(page, 20);
+      return res.data;
+    },
+    20_000,
+    true
+  );
+
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      try {
-        const { data } = await jobsApi.listOpen(page, 20);
-        if (!cancelled) {
-          setJobs(data.content || []);
-          setTotalPages(data.totalPages || 0);
-        }
-      } catch (err) {
-        if (!cancelled) setError(getErrorMessage(err));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [page]);
+    void refresh(false);
+  }, [page, refresh]);
+
+  const jobs: Job[] = data?.content || [];
+  const totalPages = data?.totalPages || 0;
 
   const filtered = q.trim()
     ? jobs.filter(
@@ -45,9 +37,20 @@ export default function JobBrowsePage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
-      <header className="space-y-2">
-        <p className="text-label">Jobs</p>
-        <h1 className="text-h1 text-ink">Open roles</h1>
+      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <p className="text-label">Jobs</p>
+            <LiveDot />
+          </div>
+          <h1 className="text-h1 text-ink">Open roles</h1>
+          {updatedAt && (
+            <p className="text-xs text-ink-faint">Auto-refreshes · last sync {updatedAt.toLocaleTimeString()}</p>
+          )}
+        </div>
+        <PressButton variant="ghost" onClick={() => void refresh(false)}>
+          Refresh now
+        </PressButton>
       </header>
 
       <input
@@ -58,7 +61,7 @@ export default function JobBrowsePage() {
       />
 
       {error && <p className="text-sm text-danger">{error}</p>}
-      {loading ? (
+      {loading && !data ? (
         <div className="space-y-3">
           <Skeleton className="h-24" />
           <Skeleton className="h-24" />
@@ -79,7 +82,10 @@ export default function JobBrowsePage() {
                 </p>
                 <p className="text-xs text-ink-faint mt-1 line-clamp-1">{job.requiredSkills}</p>
               </div>
-              <Link to={`/candidate/jobs/${job.id}`} className="press-btn press-btn--soft text-sm px-4 py-2 rounded-[12px]">
+              <Link
+                to={`/candidate/jobs/${job.id}`}
+                className="press-btn press-btn--soft text-sm px-4 py-2 rounded-[12px]"
+              >
                 View
               </Link>
             </li>

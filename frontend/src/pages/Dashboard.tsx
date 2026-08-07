@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import PressButton from '../components/PressButton';
+import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
 
 export default function Dashboard() {
@@ -32,12 +33,12 @@ export default function Dashboard() {
           Understand where you stand. Know which roles fit. Improve with clarity.
         </p>
 
-        <p className="reveal reveal-delay-3 text-base sm:text-lg text-ink-muted max-w-lg mb-10 leading-relaxed">
+        <p className="reveal reveal-delay-3 text-base sm:text-lg text-ink-muted max-w-lg mb-8 leading-relaxed">
           AI-powered career intelligence for job seekers and recruiters — matching, skill gaps, and
           resume insight in one platform.
         </p>
 
-        <div className="reveal reveal-delay-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <div className="reveal reveal-delay-4 flex flex-col sm:flex-row gap-3 sm:gap-4 mb-10">
           <PressButton variant="primary" onClick={primaryCta}>
             {isAuthenticated ? 'Open workspace' : 'Get started'}
           </PressButton>
@@ -47,6 +48,8 @@ export default function Dashboard() {
             </PressButton>
           )}
         </div>
+
+        <LiveMarketStrip />
       </div>
     </section>
   );

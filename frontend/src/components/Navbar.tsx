@@ -4,6 +4,7 @@ import { Briefcase, Menu, Moon, Sun, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Avatar, Button, IconButton } from './ui';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { pathname } = useLocation();
@@ -17,15 +18,9 @@ export default function Navbar() {
     { to: '/candidate/jobs', label: 'Jobs' },
     { to: '/candidate/applications', label: 'Applications' },
     { to: '/candidate/resume-builder', label: 'Resume' },
-    { to: '/candidate/resume-analyzer', label: 'Analyzer' },
-    { to: '/candidate/skill-gap', label: 'Skill gap' },
-    { to: '/candidate/notifications', label: 'Alerts' },
     { to: '/onboarding', label: 'Profile' },
   ];
-  const recruiterLinks = [
-    { to: '/recruiter', label: 'Recruiter Hub' },
-    { to: '/candidate/notifications', label: 'Alerts' },
-  ];
+  const recruiterLinks = [{ to: '/recruiter', label: 'Recruiter Hub' }];
   const adminLinks = [
     { to: '/admin', label: 'Admin' },
     { to: '/recruiter', label: 'Recruiter' },
@@ -51,7 +46,8 @@ export default function Navbar() {
             className="flex items-center gap-3 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-4 rounded-[4px]"
             onClick={close}
           >
-            <span className="w-9 h-9 rounded-[12px] text-white flex items-center justify-center shadow-[var(--shadow-1)]"
+            <span
+              className="w-9 h-9 rounded-[12px] text-white flex items-center justify-center shadow-[var(--shadow-1)]"
               style={{ background: 'var(--gradient-primary)' }}
             >
               <Briefcase size={18} />
@@ -70,6 +66,8 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+            <NotificationBell />
 
             <IconButton label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} onClick={toggleTheme}>
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -102,6 +100,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex md:hidden items-center gap-2">
+            <NotificationBell />
             <IconButton label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'} onClick={toggleTheme}>
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </IconButton>

@@ -7,6 +7,8 @@ import { tokenStorage } from '../lib/tokenStorage';
 import { authApi } from '../lib/authApi';
 import {
   CANDIDATE_STEPS,
+  SKILL_CATEGORIES,
+  SKILL_LEVELS,
   SKILL_SUGGESTIONS,
   type OnboardingState,
 } from '../types/onboarding';
@@ -56,6 +58,7 @@ export default function OnboardingPage() {
   const [skills, setSkills] = useState<{ name: string; level: string }[]>([]);
   const [skillInput, setSkillInput] = useState('');
   const [skillLevel, setSkillLevel] = useState('Intermediate');
+  const [skillCategory, setSkillCategory] = useState(SKILL_CATEGORIES[0]?.id ?? 'software');
   const [experiences, setExperiences] = useState([emptyExp()]);
   const [projects, setProjects] = useState([emptyProject()]);
   const [preferredJobRole, setPreferredJobRole] = useState('');
@@ -70,13 +73,18 @@ export default function OnboardingPage() {
   const missing = state?.completion.missing ?? [];
   const canFinish = state?.completion.canFinish ?? false;
 
+  const activeCategorySkills = useMemo(() => {
+    const cat = SKILL_CATEGORIES.find((c) => c.id === skillCategory);
+    return cat?.skills ?? [];
+  }, [skillCategory]);
+
   const filteredSuggestions = useMemo(
     () =>
       SKILL_SUGGESTIONS.filter(
         (s) =>
           s.toLowerCase().includes(skillInput.toLowerCase()) &&
           !skills.some((x) => x.name.toLowerCase() === s.toLowerCase())
-      ).slice(0, 6),
+      ).slice(0, 8),
     [skillInput, skills]
   );
 
@@ -170,12 +178,39 @@ export default function OnboardingPage() {
     }
   };
 
-  const addSkill = (name: string) => {
+  const addSkill = (name: string, level = skillLevel) => {
     const trimmed = name.trim();
-    if (!trimmed) return;
-    if (skills.some((s) => s.name.toLowerCase() === trimmed.toLowerCase())) return;
-    setSkills((prev) => [...prev, { name: trimmed, level: skillLevel }]);
+    if (!trimmed) {
+      setError('Enter a skill name first (or tap a skill chip below).');
+      return;
+    }
+    if (skills.some((s) => s.name.toLowerCase() === trimmed.toLowerCase())) {
+      setError(`“${trimmed}” is already added.`);
+      return;
+    }
+    setError('');
+    setSkills((prev) => [...prev, { name: trimmed, level }]);
     setSkillInput('');
+  };
+
+  const toggleSuggestedSkill = (name: string) => {
+    if (skills.some((s) => s.name.toLowerCase() === name.toLowerCase())) {
+      setSkills((list) => list.filter((x) => x.name.toLowerCase() !== name.toLowerCase()));
+      return;
+    }
+    addSkill(name);
+  };
+
+  const updateSkillLevel = (name: string, level: string) => {
+    setSkills((list) => list.map((s) => (s.name === name ? { ...s, level } : s)));
+  };
+
+  const saveSkillsStep = async () => {
+    if (skills.length < 3) {
+      setError('Add at least 3 skills before continuing.');
+      return;
+    }
+    await withSave(() => onboardingApi.saveSkills(skills), 3);
   };
 
   const toggleJobType = (type: string) => {
@@ -256,7 +291,14 @@ export default function OnboardingPage() {
         <p className="text-label">Career profile setup</p>
         <h1 className="text-h1 text-ink">Let&apos;s build your career profile</h1>
         <CompletionBar percent={percent} />
-        <StepRail steps={[...CANDIDATE_STEPS]} current={step} onJump={setStep} />
+        <StepRail
+          steps={[...CANDIDATE_STEPS]}
+          current={step}
+          onJump={(i) => {
+            setError('');
+            setStep(i);
+          }}
+        />
       </header>
 
       <div className="ui-panel p-6 sm:p-8 space-y-5">
@@ -374,68 +416,176 @@ export default function OnboardingPage() {
         )}
 
         {step === 2 && (
-          <section className="space-y-4">
-            <h2 className="text-h2 text-ink">Skills</h2>
-            <p className="text-sm text-ink-muted">Add at least 3 skills with proficiency.</p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input
-                className="ui-input !pl-4 flex-1"
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                placeholder="Search or type a skill"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addSkill(skillInput);
-                  }
-                }}
-              />
-              <select
-                className="ui-input !pl-4 sm:w-40"
-                value={skillLevel}
-                onChange={(e) => setSkillLevel(e.target.value)}
-              >
-                {['Beginner', 'Intermediate', 'Advanced', 'Expert'].map((l) => (
-                  <option key={l}>{l}</option>
-                ))}
-              </select>
-              <PressButton variant="soft" className="!w-auto px-4" onClick={() => addSkill(skillInput)}>
-                Add
-              </PressButton>
+          <section className="space-y-5">
+            <div>
+              <h2 className="text-h2 text-ink">Skills</h2>
+              <p className="text-sm text-ink-muted mt-1">
+                Pick from popular skills or type your own. Add at least 3 with a proficiency level.
+              </p>
             </div>
-            {filteredSuggestions.length > 0 && skillInput && (
-              <div className="flex flex-wrap gap-2">
-                {filteredSuggestions.map((s) => (
+
+            <div className="rounded-[12px] border border-line bg-surface-2/40 p-4 space-y-3">
+              <p className="text-sm font-semibold text-ink">Browse by field — tap to add</p>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {SKILL_CATEGORIES.map((cat) => (
                   <button
-                    key={s}
+                    key={cat.id}
                     type="button"
-                    className="ui-chip ui-chip--info"
-                    onClick={() => addSkill(s)}
+                    onClick={() => setSkillCategory(cat.id)}
+                    className={`shrink-0 rounded-[10px] px-3 py-1.5 text-xs font-semibold border transition ${
+                      skillCategory === cat.id
+                        ? 'bg-brand text-white border-brand'
+                        : 'bg-surface text-ink-muted border-line hover:border-brand hover:text-brand'
+                    }`}
                   >
-                    {s}
+                    {cat.label}
                   </button>
                 ))}
               </div>
-            )}
-            <div className="flex flex-wrap gap-2">
-              {skills.map((s) => (
-                <span key={s.name} className="ui-chip ui-chip--info gap-2">
-                  {s.name} · {s.level}
-                  <button
-                    type="button"
-                    className="text-brand"
-                    onClick={() => setSkills((list) => list.filter((x) => x.name !== s.name))}
-                    aria-label={`Remove ${s.name}`}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+              <div className="flex flex-wrap gap-2">
+                {activeCategorySkills.map((s) => {
+                  const selected = skills.some((x) => x.name.toLowerCase() === s.toLowerCase());
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => toggleSuggestedSkill(s)}
+                      className={`rounded-[10px] px-3 py-1.5 text-sm font-medium border transition ${
+                        selected
+                          ? 'bg-brand text-white border-brand'
+                          : 'bg-surface text-ink border-line hover:border-brand hover:text-brand'
+                      }`}
+                    >
+                      {selected ? `✓ ${s}` : `+ ${s}`}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px_auto] gap-3 items-end">
+              <label className="block space-y-1.5 min-w-0">
+                <span className="text-sm font-medium text-ink">Skill name</span>
+                <input
+                  className="ui-input"
+                  value={skillInput}
+                  onChange={(e) => {
+                    setSkillInput(e.target.value);
+                    if (error) setError('');
+                  }}
+                  placeholder="e.g. Spring Security, Figma, Excel"
+                  list="skill-suggestions"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addSkill(skillInput);
+                    }
+                  }}
+                />
+                <datalist id="skill-suggestions">
+                  {SKILL_SUGGESTIONS.map((s) => (
+                    <option key={s} value={s} />
+                  ))}
+                </datalist>
+              </label>
+              <label className="block space-y-1.5">
+                <span className="text-sm font-medium text-ink">Level</span>
+                <select
+                  className="ui-input"
+                  value={skillLevel}
+                  onChange={(e) => setSkillLevel(e.target.value)}
+                >
+                  {SKILL_LEVELS.map((l) => (
+                    <option key={l} value={l}>
+                      {l}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <PressButton
+                variant="soft"
+                className="!min-h-11 sm:!w-auto"
+                onClick={() => addSkill(skillInput)}
+              >
+                Add skill
+              </PressButton>
+            </div>
+
+            {filteredSuggestions.length > 0 && skillInput.trim() && (
+              <div className="space-y-2">
+                <p className="text-xs text-ink-muted">Matching suggestions</p>
+                <div className="flex flex-wrap gap-2">
+                  {filteredSuggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      className="ui-chip ui-chip--info"
+                      onClick={() => addSkill(s)}
+                    >
+                      + {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-semibold text-ink">
+                  Your skills ({skills.length}/3 minimum)
+                </p>
+                {skills.length < 3 && (
+                  <span className="text-xs text-warning font-medium">
+                    Add {3 - skills.length} more
+                  </span>
+                )}
+              </div>
+              {skills.length === 0 ? (
+                <p className="text-sm text-ink-muted rounded-[12px] border border-dashed border-line p-4">
+                  No skills yet — tap chips above or type a skill name and click Add skill.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {skills.map((s) => (
+                    <li
+                      key={s.name}
+                      className="flex flex-col sm:flex-row sm:items-center gap-2 rounded-[12px] border border-line bg-surface px-3 py-2"
+                    >
+                      <span className="font-medium text-ink flex-1 min-w-0 truncate">{s.name}</span>
+                      <div className="flex items-center gap-2">
+                        <label className="sr-only" htmlFor={`level-${s.name}`}>
+                          Level for {s.name}
+                        </label>
+                        <select
+                          id={`level-${s.name}`}
+                          className="ui-input !h-9 !min-h-0 text-sm w-full sm:w-40"
+                          value={s.level}
+                          onChange={(e) => updateSkillLevel(s.name, e.target.value)}
+                        >
+                          {SKILL_LEVELS.map((l) => (
+                            <option key={l} value={l}>
+                              {l}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          className="text-sm text-danger font-medium px-2 py-1"
+                          onClick={() => setSkills((list) => list.filter((x) => x.name !== s.name))}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <NavRow
               saving={saving}
               onBack={() => setStep(1)}
-              onNext={() => void withSave(() => onboardingApi.saveSkills(skills), 3)}
+              onNext={() => void saveSkillsStep()}
             />
           </section>
         )}

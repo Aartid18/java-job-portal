@@ -18,6 +18,8 @@ import {
   YAxis,
 } from 'recharts';
 import PressButton from '../components/PressButton';
+import LiveActivityFeed from '../components/LiveActivityFeed';
+import LiveDot from '../components/LiveDot';
 import { EmptyState, Skeleton, StatCard } from '../components/ui';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
@@ -149,9 +151,12 @@ export default function JobSeekerDashboard() {
       <header className="reveal flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div className="space-y-2">
           <p className="text-label">Career workspace</p>
-          <h1 className="text-h1 text-ink">
-            Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-h1 text-ink">
+              Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}
+            </h1>
+            <LiveDot />
+          </div>
           <p className="text-ink-muted">
             {data.preferredRole
               ? `Targeting ${data.preferredRole}${data.location ? ` · ${data.location}` : ''}`
@@ -401,6 +406,10 @@ export default function JobSeekerDashboard() {
             </Link>
           ))}
         </div>
+
+      <div className="reveal">
+        <LiveActivityFeed mode="seeker" />
+      </div>
 
       {data.profileMissing.length > 0 && (
         <div className="ui-panel p-6 reveal space-y-3">
