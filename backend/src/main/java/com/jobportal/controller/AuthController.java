@@ -2,6 +2,7 @@ package com.jobportal.controller;
 
 import com.jobportal.dto.*;
 import com.jobportal.service.AuthService;
+import com.jobportal.service.OnboardingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final OnboardingService onboardingService;
 
     @PostMapping("/register")
     @Operation(summary = "Register a job seeker or recruiter")
@@ -74,8 +76,9 @@ public class AuthController {
     }
 
     @PostMapping("/complete-onboarding")
-    @Operation(summary = "Mark onboarding complete (Phase 2 placeholder until full wizard)")
+    @Operation(summary = "Finish onboarding when profile requirements are met")
     public UserResponse completeOnboarding(Authentication authentication) {
-        return authService.markOnboardingComplete(authentication.getName());
+        onboardingService.finish(authentication.getName());
+        return authService.me(authentication.getName());
     }
 }
