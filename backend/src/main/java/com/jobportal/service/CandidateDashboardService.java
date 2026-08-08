@@ -195,12 +195,13 @@ public class CandidateDashboardService {
                     .priority("low")
                     .build());
         } else {
+            // Always include high-impact learning roadmap action
             actions.add(CandidateDashboardResponse.NextAction.builder()
-                    .title("Review skill gaps")
-                    .description("Compare your skills against open roles to prioritize learning.")
-                    .ctaLabel("Skill gap")
-                    .ctaPath("/candidate/skill-gap")
-                    .priority("low")
+                    .title("Personalized Learning Roadmap")
+                    .description("Explore your 30-day skill milestone plan and close key job gaps.")
+                    .ctaLabel("View Roadmap")
+                    .ctaPath("/career-roadmap")
+                    .priority("high")
                     .build());
         }
 

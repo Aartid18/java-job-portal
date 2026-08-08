@@ -21,6 +21,7 @@ import JobBrowsePage from './pages/JobBrowsePage';
 import JobDetailPage from './pages/JobDetailPage';
 import ApplicationsPage from './pages/ApplicationsPage';
 import SkillGapPage from './pages/SkillGapPage';
+import { CareerRoadmapPage } from './pages/CareerRoadmapPage';
 import AdminPage from './pages/AdminPage';
 import NotificationsPage from './pages/NotificationsPage';
 
@@ -51,6 +52,22 @@ function AppRoutes() {
             element={
               <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
                 <JobSeekerDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/career-roadmap"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <CareerRoadmapPage />
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidate/career-roadmap"
+            element={
+              <RoleProtectedRoute roles={['JOB_SEEKER', 'ADMIN']}>
+                <CareerRoadmapPage />
               </RoleProtectedRoute>
             }
           />

@@ -64,7 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/jobs", "/api/jobs/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/recruiter/**").hasAnyRole("RECRUITER", "ADMIN")
-                        .requestMatchers("/api/candidate/**").hasAnyRole("JOB_SEEKER", "ADMIN")
+                        .requestMatchers("/api/candidate/**", "/api/copilot/**", "/api/career/**").hasAnyRole("JOB_SEEKER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

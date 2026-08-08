@@ -15,6 +15,7 @@ export default function Navbar() {
 
   const seekerLinks = [
     { to: '/candidate', label: 'Dashboard' },
+    { to: '/career-roadmap', label: 'Roadmap' },
     { to: '/candidate/jobs', label: 'Jobs' },
     { to: '/candidate/applications', label: 'Applications' },
     { to: '/candidate/resume-builder', label: 'Resume' },

@@ -43,6 +43,20 @@
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
+
+  --surface: var(--color-surface);
+  --surface-2: var(--color-surface-2);
+  --ink: var(--color-ink);
+  --ink-muted: var(--color-ink-muted);
+  --ink-faint: var(--color-ink-faint);
+  --line: var(--color-line);
+  --brand: var(--color-brand);
+  --canvas: var(--color-canvas);
+  --accent: var(--color-accent);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --danger: var(--color-danger);
+
   --nav-bg: rgb(255 255 255 / 0.84);
   --gradient-primary: linear-gradient(135deg, #4f46e5, #7c3aed);
   --gradient-accent: linear-gradient(135deg, #06b6d4, #4f46e5);
@@ -54,6 +68,7 @@
   --duration-slow: 400ms;
 }
 
+.dark,
 [data-theme="dark"] {
   --color-brand: #818cf8;
   --color-brand-hover: #a5b4fc;
@@ -70,6 +85,20 @@
   --color-success: #34d399;
   --color-warning: #fbbf24;
   --color-danger: #f87171;
+
+  --surface: var(--color-surface);
+  --surface-2: var(--color-surface-2);
+  --ink: var(--color-ink);
+  --ink-muted: var(--color-ink-muted);
+  --ink-faint: var(--color-ink-faint);
+  --line: var(--color-line);
+  --brand: var(--color-brand);
+  --canvas: var(--color-canvas);
+  --accent: var(--color-accent);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --danger: var(--color-danger);
+
   --nav-bg: rgb(17 24 39 / 0.88);
   --gradient-primary: linear-gradient(135deg, #4f46e5, #7c3aed);
   --gradient-accent: linear-gradient(135deg, #06b6d4, #6366f1);
@@ -109,6 +138,7 @@ body {
 }
 
 /* ---------- Atmosphere ---------- */
+/* ---------- Atmosphere & Continuous Live Background ---------- */
 .atmosphere {
   position: fixed;
   inset: 0;
@@ -120,11 +150,11 @@ body {
 
 .atmosphere__mesh {
   position: absolute;
-  inset: -15%;
+  inset: -20%;
   background:
-    radial-gradient(ellipse 50% 40% at 16% 20%, rgb(79 70 229 / 0.12), transparent 55%),
-    radial-gradient(ellipse 42% 34% at 84% 16%, rgb(124 58 237 / 0.1), transparent 50%),
-    radial-gradient(ellipse 50% 40% at 60% 80%, rgb(6 182 212 / 0.06), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 12% 18%, rgb(79 70 229 / 0.14), transparent 60%),
+    radial-gradient(ellipse 48% 40% at 86% 22%, rgb(124 58 237 / 0.12), transparent 55%),
+    radial-gradient(ellipse 52% 42% at 55% 82%, rgb(6 182 212 / 0.08), transparent 55%),
     linear-gradient(165deg, var(--color-canvas), var(--color-surface-2));
   transform: translate3d(0, calc(var(--scroll-y, 0) * 0.04px), 0);
   will-change: transform;
@@ -132,41 +162,145 @@ body {
 
 [data-theme="dark"] .atmosphere__mesh {
   background:
-    radial-gradient(ellipse 50% 40% at 16% 20%, rgb(79 70 229 / 0.22), transparent 55%),
-    radial-gradient(ellipse 42% 34% at 84% 16%, rgb(124 58 237 / 0.16), transparent 50%),
-    radial-gradient(ellipse 50% 40% at 60% 80%, rgb(6 182 212 / 0.08), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 12% 18%, rgb(79 70 229 / 0.25), transparent 60%),
+    radial-gradient(ellipse 48% 40% at 86% 22%, rgb(124 58 237 / 0.2), transparent 55%),
+    radial-gradient(ellipse 52% 42% at 55% 82%, rgb(6 182 212 / 0.12), transparent 55%),
     linear-gradient(165deg, #0b1020, #111827);
+}
+
+.atmosphere__orb-1 {
+  position: absolute;
+  top: 5%;
+  left: 10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.16) 0%, rgba(124, 58, 237, 0.05) 50%, transparent 70%);
+  filter: blur(50px);
+  animation: orb-drift-1 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.atmosphere__orb-2 {
+  position: absolute;
+  top: 40%;
+  right: 8%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.13) 0%, rgba(79, 70, 229, 0.06) 50%, transparent 70%);
+  filter: blur(60px);
+  animation: orb-drift-2 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.atmosphere__orb-3 {
+  position: absolute;
+  bottom: 8%;
+  left: 25%;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.14) 0%, rgba(6, 182, 212, 0.04) 50%, transparent 70%);
+  filter: blur(55px);
+  animation: orb-drift-3 25s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+[data-theme="dark"] .atmosphere__orb-1 {
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.28) 0%, rgba(124, 58, 237, 0.1) 50%, transparent 70%);
+  filter: blur(60px);
+}
+
+[data-theme="dark"] .atmosphere__orb-2 {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, rgba(79, 70, 229, 0.1) 50%, transparent 70%);
+  filter: blur(70px);
+}
+
+[data-theme="dark"] .atmosphere__orb-3 {
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.24) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
+  filter: blur(65px);
+}
+
+.atmosphere__grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(99, 102, 241, 0.035) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(99, 102, 241, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 85%);
+}
+
+[data-theme="dark"] .atmosphere__grid {
+  background-image: linear-gradient(to right, rgba(129, 140, 248, 0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(129, 140, 248, 0.05) 1px, transparent 1px);
 }
 
 .atmosphere__grain {
   position: absolute;
   inset: 0;
-  opacity: 0.28;
+  opacity: 0.24;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
   background-size: 180px 180px;
 }
 
 [data-theme="dark"] .atmosphere__grain {
-  opacity: 0.15;
+  opacity: 0.12;
   mix-blend-mode: soft-light;
 }
 
 .atmosphere__svg {
   position: absolute;
   right: -2%;
-  top: 12%;
-  width: min(520px, 48vw);
+  top: 10%;
+  width: min(560px, 50vw);
   height: auto;
-  opacity: 0.5;
+  opacity: 0.6;
+}
+
+.atmosphere__flow-line {
+  stroke-dasharray: 8 12;
+  animation: flow-dash 16s linear infinite;
+}
+
+.atmosphere__pulse-node {
+  animation: pulse-node 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes orb-drift-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.1); }
+  100% { transform: translate(-30px, 70px) scale(0.95); }
+}
+
+@keyframes orb-drift-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -40px) scale(1.08); }
+  100% { transform: translate(40px, -60px) scale(0.92); }
+}
+
+@keyframes orb-drift-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 50px) scale(1.12); }
+  100% { transform: translate(50px, -30px) scale(0.9); }
+}
+
+@keyframes flow-dash {
+  to { stroke-dashoffset: -200; }
+}
+
+@keyframes pulse-node {
+  0% { r: 6; opacity: 0.8; }
+  100% { r: 10; opacity: 0.3; }
 }
 
 @media (max-width: 768px) {
   .atmosphere__svg {
-    opacity: 0.22;
-    width: 70vw;
-    top: 8%;
-    right: -18%;
+    opacity: 0.25;
+    width: 75vw;
+    top: 6%;
+    right: -15%;
   }
 }
 

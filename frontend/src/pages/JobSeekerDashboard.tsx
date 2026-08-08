@@ -7,6 +7,8 @@ import {
   Sparkles,
   Target,
   TrendingUp,
+  Bot,
+  Compass,
 } from 'lucide-react';
 import {
   Bar,
@@ -21,6 +23,7 @@ import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
 import LiveDot from '../components/LiveDot';
 import { EmptyState, Skeleton, StatCard } from '../components/ui';
+import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
 
@@ -86,6 +89,7 @@ export default function JobSeekerDashboard() {
   const [data, setData] = useState<CandidateDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copilotOpen, setCopilotOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,22 +117,19 @@ export default function JobSeekerDashboard() {
 
   const statusChart = useMemo(() => {
     if (!data?.applicationsByStatus) return [];
-    return Object.entries(data.applicationsByStatus).map(([status, count]) => ({
-      status,
-      count,
-    }));
+    return Object.entries(data.applicationsByStatus).map(([status, count]) => ({ status, count }));
   }, [data]);
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Skeleton className="h-40" />
-          <Skeleton className="h-40" />
-          <Skeleton className="h-40" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
+        <Skeleton className="h-24 w-full" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Skeleton className="h-28" />
+          <Skeleton className="h-28" />
+          <Skeleton className="h-28" />
+          <Skeleton className="h-28" />
         </div>
-        <Skeleton className="h-64" />
       </div>
     );
   }
@@ -163,9 +164,18 @@ export default function JobSeekerDashboard() {
               : 'Your live career readiness and application signal.'}
           </p>
         </div>
-        <Link to="/onboarding">
-          <PressButton variant="ghost">Edit profile</PressButton>
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setCopilotOpen(true)}
+            className="press-btn press-btn--primary !min-h-10 !px-4 !py-2 text-sm flex items-center gap-2"
+          >
+            <Bot size={16} />
+            Career Copilot
+          </button>
+          <Link to="/onboarding">
+            <PressButton variant="ghost">Edit profile</PressButton>
+          </Link>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -221,6 +231,23 @@ export default function JobSeekerDashboard() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="pt-3 border-t border-line flex flex-col gap-2">
+            <Link
+              to="/career-roadmap"
+              className="w-full text-center px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5"
+            >
+              <Compass size={14} />
+              Open 30-Day Learning Roadmap
+            </Link>
+            <button
+              onClick={() => setCopilotOpen(true)}
+              className="w-full text-center px-4 py-2 rounded-xl bg-surface-2 hover:bg-surface text-ink font-semibold text-xs border border-line transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <Bot size={14} className="text-indigo-600" />
+              Ask Copilot to Analyze Gaps
+            </button>
           </div>
         </div>
 
@@ -395,11 +422,12 @@ export default function JobSeekerDashboard() {
 
         <div className="flex flex-wrap gap-2 reveal">
           {[
+            ['/career-roadmap', '🎯 30-Day Roadmap'],
             ['/candidate/jobs', 'Browse jobs'],
             ['/candidate/applications', 'Applications'],
             ['/candidate/resume-builder', 'Resume builder'],
             ['/candidate/resume-analyzer', 'Analyzer'],
-            ['/candidate/skill-gap', 'Skill gap'],
+            ['/candidate/skill-gap', 'Skill gap matrix'],
           ].map(([to, label]) => (
             <Link key={to} to={to} className="press-btn press-btn--soft !min-h-10 !px-4 !py-2 text-sm">
               {label}
@@ -426,6 +454,31 @@ export default function JobSeekerDashboard() {
           </Link>
         </div>
       )}
+
+      {/* Persistent Floating Career Copilot Button */}
+      <div className="fixed bottom-6 right-6 z-40">
+        <button
+          onClick={() => setCopilotOpen(true)}
+          className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 text-white font-semibold text-sm shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 hover:scale-105 transition-all duration-300 cursor-pointer border border-indigo-400/30"
+          title="Open AI Career Copilot"
+        >
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+          <Sparkles className="w-4 h-4 text-indigo-200 group-hover:rotate-12 transition-transform" />
+          <span>Career Copilot</span>
+          <span className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] uppercase font-bold rounded-md bg-white/20 text-white">
+            AI
+          </span>
+        </button>
+      </div>
+
+      {/* Floating Copilot Drawer */}
+      <CareerCopilotDrawer
+        isOpen={copilotOpen}
+        onClose={() => setCopilotOpen(false)}
+      />
     </div>
   );
 }
