@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.61.9",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/space-grotesk": "^5.3.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "@types/canvas-confetti": "^1.9.0",
     "autoprefixer": "^10.5.4",
     "axios": "^1.19.0",
+    "canvas-confetti": "^1.9.4",
+    "framer-motion": "^13.1.1",
     "lucide-react": "^1.30.0",
     "postcss": "^8.5.26",
     "react": "^19.2.8",

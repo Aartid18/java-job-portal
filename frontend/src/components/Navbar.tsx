@@ -53,7 +53,7 @@ export default function Navbar() {
             >
               <Briefcase size={18} />
             </span>
-            <span className="font-display text-xl font-bold text-ink">AIJobPortal</span>
+            <span className="font-display text-xl font-bold text-ink">Java Job Portal</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-5">
