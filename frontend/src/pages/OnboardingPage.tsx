@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import PressButton from '../components/PressButton';
 import { useAuth, getErrorMessage } from '../context/AuthContext';
 import { onboardingApi } from '../lib/onboardingApi';
@@ -920,16 +921,32 @@ export default function OnboardingPage() {
 }
 
 function CompletionBar({ percent }: { percent: number }) {
+  const [animatedVal, setAnimatedVal] = useState(0);
+
+  useEffect(() => {
+    let frame = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / 600);
+      setAnimatedVal(Math.round(percent * t));
+      if (t < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [percent]);
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between text-sm">
         <span className="text-ink-muted">Profile strength</span>
-        <span className="font-display font-bold text-brand">{percent}%</span>
+        <span className="font-display font-bold text-brand">{animatedVal}%</span>
       </div>
-      <div className="h-2 rounded-full bg-surface-2 overflow-hidden">
-        <div
-          className="h-full bg-brand transition-all duration-500 ease-out"
-          style={{ width: `${Math.min(percent, 100)}%` }}
+      <div className="h-2.5 rounded-full bg-surface-2 overflow-hidden p-0.5 border border-line/40">
+        <motion.div
+          className="h-full bg-gradient-to-r from-brand to-violet-500 rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${Math.min(percent, 100)}%` }}
+          transition={{ type: 'spring', stiffness: 220, damping: 24 }}
         />
       </div>
     </div>

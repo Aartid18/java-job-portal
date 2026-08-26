@@ -90,7 +90,7 @@ export const cardHoverVariants = {
 export const shakeVariants = {
   shake: {
     x: [-8, 8, -6, 6, -3, 3, 0],
-    transition: { duration: 0.35, ease: 'easeInOut' },
+    transition: { duration: 0.35, ease: 'easeInOut' as const },
   },
 };
 

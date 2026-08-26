@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth, getErrorMessage } from '../context/AuthContext';
 import FloatingInput from '../components/auth/FloatingInput';
 import MagneticButton from '../components/auth/MagneticButton';
+import { scaleIn, shakeVariants } from '../lib/motion';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -71,7 +72,12 @@ export default function LoginPage() {
         </div>
 
         {/* Form Panel */}
-        <div className="rounded-2xl border border-line/80 bg-surface/85 backdrop-blur-xl p-6 sm:p-8 shadow-xl space-y-5 hover:shadow-2xl transition-all duration-300">
+        <motion.div
+          variants={{ ...scaleIn, ...shakeVariants }}
+          initial="hidden"
+          animate={error ? 'shake' : 'visible'}
+          className="rounded-2xl border border-line/80 bg-surface/85 backdrop-blur-xl p-6 sm:p-8 shadow-xl space-y-5 hover:shadow-2xl transition-all duration-300"
+        >
           <form onSubmit={onSubmit} className="space-y-4">
             <FloatingInput
               label="Email Address"
@@ -222,7 +228,7 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <p className="text-center text-sm text-ink-muted">
           Don't have an account yet?{' '}

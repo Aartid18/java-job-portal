@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, Search, Users } from 'lucide-react';
 import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
@@ -259,29 +260,52 @@ export default function RecruiterDashboard() {
         </div>
 
         <div className="space-y-4">
-          {filteredApps.map((a) => (
-            <div key={a.id} className="candidate-row p-5 space-y-3">
-              <div className="flex justify-between items-start gap-4">
-                <div>
-                  <h4 className="text-h3 text-ink">{a.candidateName || 'Candidate'}</h4>
-                  <p className="text-sm text-ink-muted">Applied for {a.jobTitle}</p>
+          <AnimatePresence>
+            {filteredApps.map((a) => (
+              <motion.div
+                key={a.id}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 350, damping: 26 }}
+                className="candidate-row p-5 space-y-3 rounded-2xl border border-line/80 bg-surface/90 backdrop-blur-xl shadow-xs hover:shadow-md transition-shadow"
+              >
+                <div className="flex justify-between items-start gap-4">
+                  <div className="space-y-1 flex-1">
+                    <h4 className="text-h3 text-ink font-bold font-display">{a.candidateName || 'Candidate'}</h4>
+                    <p className="text-sm text-ink-muted">Applied for <span className="font-semibold text-ink">{a.jobTitle}</span></p>
+
+                    {/* Animated Match Fill Bar */}
+                    {a.compatibilityScore != null && (
+                      <div className="w-full max-w-xs pt-1">
+                        <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden border border-line/40">
+                          <motion.div
+                            className="h-full bg-gradient-to-r from-brand to-cyan-500 rounded-full"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.min(a.compatibilityScore, 100)}%` }}
+                            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-brand-muted/50 text-brand text-xs font-extrabold shrink-0 border border-brand/20">
+                    {a.compatibilityScore != null ? `${Math.round(a.compatibilityScore)}% Match` : 'No score'}
+                  </span>
                 </div>
-                <span className="ui-chip ui-chip--info shrink-0">
-                  {a.compatibilityScore != null ? `${Math.round(a.compatibilityScore)}% match` : 'No score'}
-                </span>
-              </div>
-              {a.skillGapAnalysis && (
-                <p className="text-xs text-ink-faint whitespace-pre-wrap bg-surface-2 rounded-[12px] p-3 border border-line">
-                  {a.skillGapAnalysis}
-                </p>
-              )}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs text-ink-muted">Status:</span>
-                <select
-                  className="ui-input !h-9 !min-h-0 text-sm w-auto"
-                  value={a.status}
-                  onChange={(e) => void updateStatus(a.id, e.target.value)}
-                >
+                {a.skillGapAnalysis && (
+                  <p className="text-xs text-ink-muted whitespace-pre-wrap bg-surface-2/60 rounded-xl p-3 border border-line/60 leading-relaxed">
+                    {a.skillGapAnalysis}
+                  </p>
+                )}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-ink-muted">Status:</span>
+                  <select
+                    className="ui-input !h-9 !min-h-0 text-sm w-auto rounded-lg border-line"
+                    value={a.status}
+                    onChange={(e) => void updateStatus(a.id, e.target.value)}
+                  >
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>
                       {s}
@@ -296,8 +320,9 @@ export default function RecruiterDashboard() {
                   Schedule interview
                 </PressButton>
               </div>
-            </div>
+            </motion.div>
           ))}
+          </AnimatePresence>
           {filteredApps.length === 0 && (
             <EmptyState
               title="No applications"
