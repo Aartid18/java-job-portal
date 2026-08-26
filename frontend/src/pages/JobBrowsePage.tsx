@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { MapPin, IndianRupee, Sparkles, Search, Filter } from 'lucide-react';
 import PressButton from '../components/PressButton';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, Skeleton } from '../components/ui';
+import { EmptyState, TiltCard, RibbonBadge } from '../components/ui';
 import { useLivePoll } from '../hooks/useLivePoll';
 import { jobsApi, type Job } from '../lib/jobsApi';
 
@@ -109,12 +109,16 @@ export default function JobBrowsePage() {
           <span>{error}</span>
         </div>
       )}
-
       {loading && !data ? (
         <div className="space-y-4">
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="relative overflow-hidden rounded-2xl border border-line p-6 bg-surface/70 space-y-4">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 dark:via-white/5 to-transparent animate-[shimmer_1.5s_infinite] -translate-x-full" />
+              <div className="h-6 w-1/3 bg-surface-2 rounded-lg" />
+              <div className="h-4 w-1/2 bg-surface-2 rounded-lg" />
+              <div className="h-3 w-3/4 bg-surface-2 rounded-lg" />
+            </div>
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState title="No matching roles found" description="Try clearing your search or selecting a different filter chip." />
@@ -122,41 +126,44 @@ export default function JobBrowsePage() {
         <div className="space-y-4">
           {filtered.map((job, idx) => {
             const skillsList = job.requiredSkills ? job.requiredSkills.split(',').map((s) => s.trim()) : [];
+            const isTopMatch = (job.jobQualityScore && job.jobQualityScore >= 85) || idx === 0;
+
             return (
               <motion.div
                 key={job.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: idx * 0.05 }}
-                className="group relative rounded-2xl border border-line/80 bg-surface/90 p-6 backdrop-blur-xl shadow-md hover:shadow-xl hover:border-brand/40 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6"
               >
-                <div className="space-y-3 flex-1">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <Link to={`/candidate/jobs/${job.id}`} className="text-xl font-bold font-display text-ink group-hover:text-brand transition-colors">
-                        {job.title}
-                      </Link>
-                      <p className="text-sm font-medium text-ink-muted mt-1 flex items-center gap-3 flex-wrap">
-                        <span className="font-semibold text-ink">{job.companyName || job.recruiterName || 'Enterprise Partner'}</span>
-                        <span className="text-line">•</span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-brand" /> {job.location || 'Remote'}
+                <TiltCard className="group relative rounded-2xl border border-line/80 bg-surface/90 p-6 backdrop-blur-xl shadow-md hover:shadow-xl hover:border-brand/40 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  {isTopMatch && <RibbonBadge label={idx === 0 ? 'Top Match' : 'Featured'} variant={idx === 0 ? 'match' : 'featured'} />}
+                  <div className="space-y-3 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <Link to={`/candidate/jobs/${job.id}`} className="text-xl font-bold font-display text-ink group-hover:text-brand transition-colors">
+                          {job.title}
+                        </Link>
+                        <p className="text-sm font-medium text-ink-muted mt-1 flex items-center gap-3 flex-wrap">
+                          <span className="font-semibold text-ink">{job.companyName || job.recruiterName || 'Enterprise Partner'}</span>
+                          <span className="text-line">•</span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5 text-brand" /> {job.location || 'Remote'}
+                          </span>
+                          <span className="text-line">•</span>
+                          <span className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
+                            <IndianRupee className="w-3.5 h-3.5" /> {job.salaryRange || 'Competitive'}
+                          </span>
+                        </p>
+                      </div>
+
+                      {job.jobQualityScore && (
+                        <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center gap-1 whitespace-nowrap">
+                          <Sparkles className="w-3.5 h-3.5" /> {job.jobQualityScore}% Match
                         </span>
-                        <span className="text-line">•</span>
-                        <span className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
-                          <IndianRupee className="w-3.5 h-3.5" /> {job.salaryRange || 'Competitive'}
-                        </span>
-                      </p>
+                      )}
                     </div>
 
-                    {job.jobQualityScore && (
-                      <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center gap-1 whitespace-nowrap">
-                        <Sparkles className="w-3.5 h-3.5" /> {job.jobQualityScore}% Match
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-xs text-ink-muted line-clamp-2 leading-relaxed">{job.description}</p>
+                    <p className="text-xs text-ink-muted line-clamp-2 leading-relaxed">{job.description}</p>
 
                   <div className="flex items-center gap-2 flex-wrap pt-1">
                     {skillsList.map((skill) => (
@@ -179,8 +186,9 @@ export default function JobBrowsePage() {
                   </Link>
                   <span className="text-[11px] text-ink-faint whitespace-nowrap">{job.requiredExperienceYears || 3}+ yrs exp</span>
                 </div>
-              </motion.div>
-            );
+              </TiltCard>
+            </motion.div>
+          );
           })}
         </div>
       )}

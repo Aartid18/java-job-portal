@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import PressButton from '../components/PressButton';
 import { getErrorMessage } from '../lib/api';
 import { resumeApi, type ResumeAnalysis } from '../lib/resumeApi';
+import { RadarScanMeter, SpeechBubbleCallout, IconBadgeBullet } from '../components/ui';
 
 export default function ResumeAnalyzerPage() {
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
@@ -36,7 +38,7 @@ export default function ResumeAnalyzerPage() {
       <header className="space-y-2">
         <p className="text-label">Resume Analyzer</p>
         <h1 className="text-h1 text-ink">ATS-style compatibility analysis</h1>
-        <p className="text-ink-muted text-sm">Heuristic scoring from your PDF — does not claim universal ATS coverage.</p>
+        <p className="text-ink-muted text-sm">Heuristic scoring from your PDF — evaluates keywords, layout structure, and impact metrics.</p>
       </header>
 
       <div className="ui-panel p-6 space-y-4">
@@ -54,27 +56,46 @@ export default function ResumeAnalyzerPage() {
         {error && <p className="text-sm text-danger">{error}</p>}
       </div>
 
-      {analysis && (
-        <div className="ui-panel p-6 space-y-5">
-          <div className="flex items-end justify-between">
-            <h2 className="text-h2 text-ink">Resume Score</h2>
-            <span className="text-3xl font-display font-bold text-brand">{analysis.score}/100</span>
+      {loading && (
+        <div className="ui-panel p-8 flex flex-col items-center justify-center space-y-4 text-center">
+          <RadarScanMeter score={0} loading={true} />
+          <p className="text-sm font-semibold uppercase tracking-widest text-ink-muted animate-pulse">
+            Scanning resume PDF structure & extracting skills…
+          </p>
+        </div>
+      )}
+
+      {analysis && !loading && (
+        <div className="ui-panel p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-line pb-6">
+            <div className="space-y-1 text-center sm:text-left">
+              <h2 className="text-h2 text-ink font-bold font-display">ATS Diagnostics Report</h2>
+              <p className="text-xs text-ink-muted">Automated breakdown based on industry recruitment heuristics.</p>
+            </div>
+            <RadarScanMeter score={analysis.score} loading={false} />
           </div>
+
           <div className="space-y-3">
             {bars.map(([label, score]) => (
               <div key={String(label)} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className="text-ink-muted">{label}</span>
-                  <span className="font-semibold">{score as number}</span>
+                  <span className="font-semibold">{score as number}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-surface-2 overflow-hidden">
-                  <div className="h-full" style={{ width: `${score}%`, background: 'var(--gradient-primary)' }} />
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-brand to-cyan-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${score as number}%` }}
+                    transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                  />
                 </div>
               </div>
             ))}
           </div>
+
           <div>
-            <h3 className="text-h3 mb-2">Skills found</h3>
+            <h3 className="text-h3 mb-2">Skills Found</h3>
             <div className="flex flex-wrap gap-2">
               {analysis.skillsFound?.length
                 ? analysis.skillsFound.map((s) => (
@@ -83,13 +104,18 @@ export default function ResumeAnalyzerPage() {
                 : <span className="text-sm text-ink-muted">None detected</span>}
             </div>
           </div>
+
           <div>
-            <h3 className="text-h3 mb-2">Suggestions</h3>
-            <ul className="space-y-1 text-sm text-ink-muted">
+            <h3 className="text-h3 mb-3">AI Suggestions</h3>
+            <div className="space-y-3">
               {analysis.suggestions?.map((s) => (
-                <li key={s}>• {s}</li>
+                <SpeechBubbleCallout key={s} type="ai" title="AI Recommendation">
+                  <IconBadgeBullet icon="sparkle" variant="brand">
+                    {s}
+                  </IconBadgeBullet>
+                </SpeechBubbleCallout>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       )}
