@@ -100,6 +100,107 @@ export const chipPopVariants = {
   exit: { opacity: 0, scale: 0.8, transition: TRANSITION_FAST },
 };
 
+/* ==========================================================================
+   Section-Entrance Choreography (Addendum 2 B)
+   Mapping Guidelines:
+   - heroZoomIn: Main page hero headlines, primary hero CTA banners
+   - heroZoomOutSettle: Hero background illustrations and ambient showcase frames
+   - gridExplode: Feature bento grids, why-choose-us icon cards, recruiter stats
+   - converge: Onboarding profile summary cards & success verification modals
+   - listLinearReveal: Job marketplace lists, notifications feed, applicant rankings
+   - statsCircularReveal: Metric badges, skill readiness score rings, admin highlights
+   ========================================================================== */
+
+export const heroZoomIn = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.4, ease: EASE_CUSTOM },
+  },
+};
+
+export const heroZoomOutSettle = {
+  hidden: { opacity: 0, scale: 1.08 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: EASE_CUSTOM },
+  },
+};
+
+export const gridExplodeContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+export const gridExplodeItem = {
+  hidden: { opacity: 0, scale: 0.4, y: 30 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: EASE_SPRING,
+  },
+};
+
+export const convergeContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+export const convergeItemLeft = {
+  hidden: { opacity: 0, x: -60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: TRANSITION_BASE,
+  },
+};
+
+export const convergeItemRight = {
+  hidden: { opacity: 0, x: 60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: TRANSITION_BASE,
+  },
+};
+
+export const listLinearReveal = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.28,
+      delay: i * 0.06,
+      ease: EASE_CUSTOM,
+    },
+  }),
+};
+
+export const statsCircularReveal = {
+  hidden: { opacity: 0, scale: 0.7, rotate: -15 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: EASE_SPRING,
+  },
+};
+
 /** Hook wrapper to detect user reduced motion preferences */
 export function useAppReducedMotion() {
   return useReducedMotion();

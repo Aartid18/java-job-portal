@@ -15,6 +15,8 @@ import {
 import PressButton from '../components/PressButton';
 import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
+import { TiltCard, OrganicStatCard, CareerIllustration2D } from '../components/ui';
+import { heroZoomIn, gridExplodeContainer, gridExplodeItem } from '../lib/motion';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -66,7 +68,7 @@ export default function Dashboard() {
     <section className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between px-4 sm:px-6 lg:px-8 py-8 sm:py-12 overflow-hidden">
       <div className="max-w-6xl mx-auto w-full space-y-16">
         {/* Hero Banner */}
-        <div className="text-center space-y-6 max-w-4xl mx-auto pt-6">
+        <div data-cursor-zone="hero" className="text-center space-y-6 max-w-4xl mx-auto pt-6 flex flex-col items-center">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -77,10 +79,12 @@ export default function Dashboard() {
             <span>AI-Powered Java & Full-Stack Career Operating System</span>
           </motion.div>
 
+          <CareerIllustration2D type="hero" className="my-2" />
+
           <motion.h1
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            variants={heroZoomIn}
+            initial="hidden"
+            animate="visible"
             className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display text-display-gradient tracking-tight leading-[1.1]"
           >
             Empowering Tech Careers & Modern Hiring
@@ -113,58 +117,47 @@ export default function Dashboard() {
           </motion.div>
         </div>
 
-        {/* Live Statistics Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl border border-line/80 bg-surface/70 backdrop-blur-xl shadow-xl">
-          <div className="text-center space-y-1 p-3">
-            <p className="text-3xl font-extrabold font-display text-brand">10,000+</p>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">Tech Jobs Analyzed</p>
-          </div>
-          <div className="text-center space-y-1 p-3">
-            <p className="text-3xl font-extrabold font-display text-violet-600 dark:text-violet-400">98%</p>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">ATS Accuracy</p>
-          </div>
-          <div className="text-center space-y-1 p-3">
-            <p className="text-3xl font-extrabold font-display text-cyan-600 dark:text-cyan-400">Jaccard</p>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">Skill Matching</p>
-          </div>
-          <div className="text-center space-y-1 p-3">
-            <p className="text-3xl font-extrabold font-display text-emerald-600 dark:text-emerald-400">3 Portals</p>
-            <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">Candidate/Recruiter/Admin</p>
-          </div>
+        {/* Live Organic Statistics Grid */}
+        <div data-cursor-zone="dashboard" className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <OrganicStatCard label="Tech Jobs Analyzed" value="10,000+" variant="blob" gradient="brand" />
+          <OrganicStatCard label="ATS Accuracy" value="98%" variant="hexagon" gradient="violet" />
+          <OrganicStatCard label="Skill Matching" value="Jaccard" variant="blob" gradient="cyan" />
+          <OrganicStatCard label="Portals" value="3 Roles" variant="hexagon" gradient="emerald" />
         </div>
 
         {/* Interactive Feature Grid */}
-        <div className="space-y-6">
+        <div data-cursor-zone="jobs" className="space-y-6">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-ink">Built for Complete Career Acceleration</h2>
             <p className="text-sm text-ink-muted">Explore intelligent features built with Spring Boot 3, React 19, and Tailwind.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {featureCards.map((card, i) => (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="group relative rounded-2xl border border-line/80 bg-surface/80 p-6 backdrop-blur-xl shadow-md hover:shadow-xl hover:border-brand/40 transition-all duration-300 space-y-4"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-xl bg-surface-2 group-hover:scale-110 transition-transform duration-300">
-                    {card.icon}
+          <motion.div
+            variants={gridExplodeContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {featureCards.map((card) => (
+              <motion.div key={card.title} variants={gridExplodeItem}>
+                <TiltCard className="group relative rounded-2xl border border-line/80 bg-surface/80 p-6 backdrop-blur-xl shadow-md hover:shadow-xl hover:border-brand/40 transition-all duration-300 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 rounded-xl bg-surface-2 group-hover:scale-110 transition-transform duration-300">
+                      {card.icon}
+                    </div>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-brand-muted/40 text-brand">
+                      {card.tag}
+                    </span>
                   </div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-brand-muted/40 text-brand">
-                    {card.tag}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-ink font-display group-hover:text-brand transition-colors">{card.title}</h3>
-                  <p className="text-sm text-ink-muted mt-1 leading-relaxed">{card.description}</p>
-                </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-ink font-display group-hover:text-brand transition-colors">{card.title}</h3>
+                    <p className="text-sm text-ink-muted mt-1 leading-relaxed">{card.description}</p>
+                  </div>
+                </TiltCard>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* Interactive Role Switcher Demo Preview */}

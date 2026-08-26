@@ -5,6 +5,8 @@ import RoleProtectedRoute from './components/RoleProtectedRoute';
 import AuthOnlyRoute from './components/AuthOnlyRoute';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { CursorZoneProvider } from './context/CursorZoneContext';
+import { ReactiveCursor } from './components/ui';
 import Dashboard from './pages/Dashboard';
 import JobSeekerDashboard from './pages/JobSeekerDashboard';
 import RecruiterDashboard from './pages/RecruiterDashboard';
@@ -166,11 +168,14 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <div className="min-h-screen flex flex-col relative">
-            <AtmosphereBackground />
-            <Navbar />
-            <AppRoutes />
-          </div>
+          <CursorZoneProvider>
+            <div className="min-h-screen flex flex-col relative">
+              <ReactiveCursor />
+              <AtmosphereBackground />
+              <Navbar />
+              <AppRoutes />
+            </div>
+          </CursorZoneProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
