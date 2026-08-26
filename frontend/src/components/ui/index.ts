@@ -1,4 +1,5 @@
 export { default as Button } from './Button';
+export { AnimatedButton } from './AnimatedButton';
 export { default as IconButton } from './IconButton';
 export { default as Input } from './Input';
 export { default as Badge } from './Badge';
