@@ -27,14 +27,9 @@ export default function EmptyState({
     >
       {icon && (
         <motion.div
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  y: [0, -6, 0],
-                }
-          }
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="flex justify-center text-brand"
         >
           {icon}
