@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, IndianRupee, Sparkles, Search, Filter } from 'lucide-react';
+import { MapPin, IndianRupee, Sparkles, Search, Filter, Bookmark } from 'lucide-react';
 import PressButton from '../components/PressButton';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, TiltCard, RibbonBadge, SectionRevealContainer, ErrorBoundary } from '../components/ui';
+import { EmptyState, TiltCard, RibbonBadge, SectionRevealContainer, ErrorBoundary, ViewportReveal } from '../components/ui';
 import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { useLivePoll } from '../hooks/useLivePoll';
 import { jobsApi, type Job } from '../lib/jobsApi';
@@ -15,6 +15,7 @@ export default function JobBrowsePage() {
   const [page, setPage] = useState(0);
   const [q, setQ] = useState('');
   const [activeFilter, setActiveFilter] = useState('All Roles');
+  const [savedJobs, setSavedJobs] = useState<number[]>([]);
 
   const { data, loading, error, updatedAt, refresh } = useLivePoll(
     async () => {
@@ -50,8 +51,8 @@ export default function JobBrowsePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
-      <SectionRevealContainer effect="slide-up" delayMs={50}>
+      {/* Header Reveal — Phase 6 Spec */}
+      <ViewportReveal delay={0.05} yOffset={24}>
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line/60 pb-6">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -82,7 +83,7 @@ export default function JobBrowsePage() {
             Refresh Marketplace
           </PressButton>
         </header>
-      </SectionRevealContainer>
+      </ViewportReveal>
 
       {/* Search & Filter Bar */}
       <SectionRevealContainer effect="spread" delayMs={100}>
@@ -103,10 +104,12 @@ export default function JobBrowsePage() {
             <Filter className="w-3.5 h-3.5" /> Filters:
           </span>
           {QUICK_FILTERS.map((chip) => (
-            <button
+            <motion.button
               key={chip}
               type="button"
               onClick={() => setActiveFilter(chip)}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 activeFilter === chip
                   ? 'bg-brand text-white shadow-xs'
@@ -114,7 +117,7 @@ export default function JobBrowsePage() {
               }`}
             >
               {chip}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -139,17 +142,35 @@ export default function JobBrowsePage() {
       ) : filtered.length === 0 ? (
         <EmptyState title="No matching roles found" description="Try clearing your search or selecting a different filter chip." />
       ) : (
-        <div className="space-y-4">
+        /* Phase 6 Staggered Job Cards Container */
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 1 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
+          }}
+          className="space-y-4"
+        >
           {filtered.map((job, idx) => {
             const skillsList = job.requiredSkills ? job.requiredSkills.split(',').map((s) => s.trim()) : [];
             const isTopMatch = (job.jobQualityScore && job.jobQualityScore >= 85) || idx === 0;
+            const isSaved = savedJobs.includes(job.id);
 
             return (
               <motion.div
                 key={job.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: idx * 0.05 }}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.98 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                  },
+                }}
+                whileHover={{ y: -5, scale: 1.012 }}
+                transition={{ type: 'spring', stiffness: 350, damping: 22 }}
               >
                 <TiltCard className="group relative rounded-2xl border border-line/80 bg-surface/90 p-6 backdrop-blur-xl shadow-md hover:shadow-xl hover:border-brand/40 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6">
                   {isTopMatch && <RibbonBadge label={idx === 0 ? 'Top Match' : 'Featured'} variant={idx === 0 ? 'match' : 'featured'} />}
@@ -172,41 +193,60 @@ export default function JobBrowsePage() {
                         </p>
                       </div>
 
-                      {job.jobQualityScore && (
-                        <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center gap-1 whitespace-nowrap">
-                          <Sparkles className="w-3.5 h-3.5" /> {job.jobQualityScore}% Match
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {job.jobQualityScore && (
+                          <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center gap-1 whitespace-nowrap">
+                            <Sparkles className="w-3.5 h-3.5" /> {job.jobQualityScore}% Match
+                          </span>
+                        )}
+                        {/* Save / Bookmark Button with Press Feedback */}
+                        <motion.button
+                          type="button"
+                          onClick={() => setSavedJobs((prev) => prev.includes(job.id) ? prev.filter((x) => x !== job.id) : [...prev, job.id])}
+                          whileHover={{ scale: 1.15 }}
+                          whileTap={{ scale: 0.88 }}
+                          className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                            isSaved
+                              ? 'bg-amber-500/10 border-amber-500/30 text-amber-500'
+                              : 'bg-surface-2/80 border-line text-ink-muted hover:text-ink'
+                          }`}
+                          title={isSaved ? 'Remove from saved' : 'Save role'}
+                        >
+                          <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+                        </motion.button>
+                      </div>
                     </div>
 
                     <p className="text-xs text-ink-muted line-clamp-2 leading-relaxed">{job.description}</p>
 
-                  <div className="flex items-center gap-2 flex-wrap pt-1">
-                    {skillsList.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-2.5 py-1 rounded-md bg-surface-2 border border-line/70 text-[11px] font-medium text-ink-muted"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                    <div className="flex items-center gap-2 flex-wrap pt-1">
+                      {skillsList.map((skill) => (
+                        <span
+                          key={skill}
+                          className="px-2.5 py-1 rounded-md bg-surface-2 border border-line/70 text-[11px] font-medium text-ink-muted"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex md:flex-col items-center justify-between md:justify-center gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-line/60 md:pl-6 md:border-l">
-                  <Link
-                    to={`/candidate/jobs/${job.id}`}
-                    className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand text-white font-semibold text-xs text-center shadow-md hover:bg-brand-hover transition-colors cursor-pointer"
-                  >
-                    View Role
-                  </Link>
-                  <span className="text-[11px] text-ink-faint whitespace-nowrap">{job.requiredExperienceYears || 3}+ yrs exp</span>
-                </div>
-              </TiltCard>
-            </motion.div>
-          );
+                  <div className="flex md:flex-col items-center justify-between md:justify-center gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-line/60 md:pl-6 md:border-l">
+                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }} className="w-full sm:w-auto">
+                      <Link
+                        to={`/candidate/jobs/${job.id}`}
+                        className="block w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand text-white font-semibold text-xs text-center shadow-md hover:bg-brand-hover transition-colors cursor-pointer"
+                      >
+                        View Role
+                      </Link>
+                    </motion.div>
+                    <span className="text-[11px] text-ink-faint whitespace-nowrap">{job.requiredExperienceYears || 3}+ yrs exp</span>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            );
           })}
-        </div>
+        </motion.div>
       )}
 
       {totalPages > 1 && (
