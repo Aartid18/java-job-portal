@@ -62,8 +62,8 @@ const DEFAULT_JOB_ROLES: JobCardData[] = [
 ];
 
 function generateCardSvgUri(title: string, dept: DepartmentInfo) {
-  const svgWidth = 800;
-  const svgHeight = 1100;
+  const svgWidth = 900;
+  const svgHeight = 1300;
 
   const escapeXml = (str: string) =>
     str.replace(/[<>&'"]/g, (c) => {
@@ -77,11 +77,11 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
       }
     });
 
-  // Smart 2-line title wrapping for maximum text size and readability
+  // Smart 2-line title wrapping for maximum text size and HD readability
   const words = title.split(' ');
   let line1 = title;
   let line2 = '';
-  if (title.length > 18 && words.length > 2) {
+  if (title.length > 16 && words.length > 2) {
     const mid = Math.ceil(words.length / 2);
     line1 = words.slice(0, mid).join(' ');
     line2 = words.slice(mid).join(' ');
@@ -106,45 +106,64 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
         </filter>
       </defs>
 
-      <!-- Card Background Gradient -->
-      <rect width="100%" height="100%" fill="url(#cardGrad)" rx="48" />
+      <!-- Card Base Surface -->
+      <rect width="100%" height="100%" fill="#0B0C10" rx="52" />
 
-      <!-- Grain Overlay -->
-      <rect width="100%" height="100%" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.25" rx="48" />
+      <!-- Top Color Area (30% Height Header) -->
+      <rect width="100%" height="380" fill="url(#cardGrad)" rx="52" />
 
-      <!-- Translucent Department Initial Letter -->
-      <text x="740" y="340" font-family="sans-serif" font-size="420" font-weight="900" fill="#ffffff" opacity="0.14" text-anchor="end">
+      <!-- Grain Overlay on Color Area -->
+      <rect width="100%" height="380" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.25" rx="52" />
+
+      <!-- Translucent Department Initial Letter in Color Area -->
+      <text x="830" y="320" font-family="system-ui, sans-serif" font-size="380" font-weight="900" fill="#ffffff" opacity="0.16" text-anchor="end">
         ${dept.initial}
       </text>
 
       <!-- Top Accent Line -->
-      <rect x="48" y="48" width="704" height="4" fill="#ffffff" opacity="0.4" />
+      <rect x="52" y="48" width="796" height="4" fill="#ffffff" opacity="0.4" />
 
-      <!-- Department Badge -->
-      <rect x="52" y="80" width="250" height="56" rx="28" fill="#000000" opacity="0.88" />
-      <text x="177" y="116" font-family="monospace" font-size="20" font-weight="900" fill="${dept.color}" text-anchor="middle" letter-spacing="3">
+      <!-- Top Accent Department Name -->
+      <text x="64" y="110" font-family="monospace" font-size="22" font-weight="900" fill="#ffffff" opacity="0.9" letter-spacing="3">
+        JAVA JOB PORTAL • OPEN ROLE
+      </text>
+
+      <!-- Bottom Text Area (70% Height Solid Dark Content Surface) -->
+      <rect x="32" y="360" width="836" height="900" rx="44" fill="#0B0C10" opacity="0.98" stroke="${dept.color}" stroke-opacity="0.4" stroke-width="3" />
+
+      <!-- Department Badge in Text Area -->
+      <rect x="64" y="410" width="280" height="64" rx="32" fill="#1B1D27" stroke="${dept.color}" stroke-opacity="0.3" stroke-width="2" />
+      <text x="204" y="451" font-family="monospace" font-size="22" font-weight="900" fill="${dept.color}" text-anchor="middle" letter-spacing="3">
         ${dept.name.toUpperCase()}
       </text>
 
-      <!-- Bottom Card Content Dark Solid Glass Box -->
-      <rect x="36" y="660" width="728" height="390" rx="36" fill="#000000" opacity="0.96" stroke="#ffffff" stroke-opacity="0.15" stroke-width="2" />
-
-      <!-- Job Title (Crisp, High-Contrast Ultra-Large Text) -->
+      <!-- Job Title (HD Ultra-Large 56px Text) -->
       ${
         line2
-          ? `<text x="72" y="755" font-family="system-ui, -apple-system, sans-serif" font-size="46" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
-             <text x="72" y="815" font-family="system-ui, -apple-system, sans-serif" font-size="46" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
-          : `<text x="72" y="785" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
+          ? `<text x="64" y="555" font-family="system-ui, -apple-system, sans-serif" font-size="54" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
+             <text x="64" y="625" font-family="system-ui, -apple-system, sans-serif" font-size="54" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
+          : `<text x="64" y="585" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
       }
 
-      <!-- Subtitle -->
-      <text x="72" y="895" font-family="sans-serif" font-size="26" font-weight="700" fill="#E2E8F0">
-        Full-time • Remote / Hybrid
+      <!-- Metadata Lines -->
+      <text x="64" y="720" font-family="sans-serif" font-size="30" font-weight="700" fill="#E2E8F0">
+        Full-Time Position • Remote / Hybrid
       </text>
 
-      <!-- CTA Action Label -->
-      <text x="72" y="975" font-family="monospace" font-size="24" font-weight="900" fill="${dept.color}" letter-spacing="2">
-        APPLY NOW →
+      <text x="64" y="780" font-family="sans-serif" font-size="26" font-weight="600" fill="#94A3B8">
+        Required: Java 21, Spring Boot 3, Microservices
+      </text>
+
+      <!-- Dynamic Feature Badge -->
+      <rect x="64" y="830" width="340" height="52" rx="16" fill="${dept.color}" opacity="0.15" />
+      <text x="80" y="865" font-family="sans-serif" font-size="22" font-weight="800" fill="${dept.color}">
+        ✓ 95% Match • Urgent Hiring
+      </text>
+
+      <!-- Action Button inside Text Area -->
+      <rect x="64" y="1080" width="708" height="110" rx="30" fill="${dept.color}" />
+      <text x="418" y="1148" font-family="monospace" font-size="30" font-weight="900" fill="#000000" text-anchor="middle" letter-spacing="2">
+        APPLY FOR POSITION →
       </text>
     </svg>
   `.trim();
