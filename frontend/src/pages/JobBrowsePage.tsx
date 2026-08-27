@@ -169,8 +169,6 @@ export default function JobBrowsePage() {
                     transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
                   },
                 }}
-                whileHover={{ y: -5, scale: 1.012 }}
-                transition={{ type: 'spring', stiffness: 350, damping: 22 }}
               >
                 <TiltCard className="group relative rounded-2xl border border-line/80 bg-surface/90 p-6 backdrop-blur-xl shadow-md hover:shadow-xl hover:border-brand/40 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6">
                   {isTopMatch && <RibbonBadge label={idx === 0 ? 'Top Match' : 'Featured'} variant={idx === 0 ? 'match' : 'featured'} />}
