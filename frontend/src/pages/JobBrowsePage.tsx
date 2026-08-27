@@ -88,7 +88,7 @@ export default function JobBrowsePage() {
 
       {/* WebGL Open Roles Circular Gallery Carousel — React Bits Integration */}
       <ViewportReveal delay={0.1} yOffset={20}>
-        <CircularGallerySection bend={1.4} scrollSpeed={0.006} scrollEase={0.07} />
+        <CircularGallerySection bend={0.35} scrollSpeed={0.006} scrollEase={0.07} />
       </ViewportReveal>
 
       {/* Search & Filter Bar */}
