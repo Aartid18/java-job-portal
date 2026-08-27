@@ -48,9 +48,17 @@ export function CandidateProfileCard({
         className="cursor-pointer relative min-h-[220px] sm:min-h-[250px] w-full overflow-hidden rounded-3xl border border-line/80 bg-surface/85 backdrop-blur-xl p-6 sm:p-8 shadow-md hover:shadow-2xl transition-shadow group flex flex-col justify-between"
         whileHover={{ y: -3, scale: 1.008 }}
       >
-        {/* Subtle Ambient Background Orbs */}
-        <div className="absolute -top-16 -right-16 w-60 h-60 rounded-full bg-brand/10 blur-3xl group-hover:bg-brand/20 transition-colors pointer-events-none" />
-        <div className="absolute -bottom-16 -left-16 w-60 h-60 rounded-full bg-violet-500/10 blur-3xl group-hover:bg-violet-500/20 transition-colors pointer-events-none" />
+        {/* Subtle Ambient Background Orbs — Phase 18 */}
+        <motion.div
+          animate={{ opacity: [0.1, 0.18, 0.1], scale: [1, 1.05, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-16 -right-16 w-60 h-60 rounded-full bg-brand/10 blur-3xl group-hover:bg-brand/20 transition-colors pointer-events-none"
+        />
+        <motion.div
+          animate={{ opacity: [0.08, 0.15, 0.08], scale: [1, 1.04, 1] }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -bottom-16 -left-16 w-60 h-60 rounded-full bg-violet-500/10 blur-3xl group-hover:bg-violet-500/20 transition-colors pointer-events-none"
+        />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
