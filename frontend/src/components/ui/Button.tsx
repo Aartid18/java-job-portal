@@ -1,12 +1,12 @@
 import { useRef, type ButtonHTMLAttributes, type MouseEvent } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'ghost' | 'soft';
   loading?: boolean;
 };
 
-/** Primary design-system button with Framer Motion tactile micro-interactions. */
+/** Primary design-system button with Framer Motion tactile micro-interactions & smooth loading transitions. */
 export default function Button({
   variant = 'primary',
   className = '',
@@ -39,8 +39,8 @@ export default function Button({
     <motion.button
       ref={ref}
       type={type}
-      whileHover={{ scale: 1.025, y: -1 }}
-      whileTap={{ scale: 0.96 }}
+      whileHover={loading ? undefined : { scale: 1.025, y: -1 }}
+      whileTap={loading ? undefined : { scale: 0.96 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       className={`press-btn press-btn--${variant} ${className}`}
       onClick={handleClick}
@@ -48,7 +48,35 @@ export default function Button({
       aria-busy={loading || undefined}
       {...(props as any)}
     >
-      <span className="press-btn__label">{loading ? 'Loading…' : children}</span>
+      <AnimatePresence mode="wait" initial={false}>
+        {loading ? (
+          <motion.span
+            key="loading"
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.85 }}
+            transition={{ duration: 0.15 }}
+            className="inline-flex items-center gap-2"
+          >
+            <svg className="animate-spin h-4 w-4 text-current" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <span>Processing…</span>
+          </motion.span>
+        ) : (
+          <motion.span
+            key="content"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="press-btn__label"
+          >
+            {children}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </motion.button>
   );
 }
