@@ -822,3 +822,95 @@ body {
   animation: scale-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
+/* ==========================================================================
+   Lightweight GPU-Accelerated Section Reveal System (IntersectionObserver)
+   ========================================================================== */
+
+.section-reveal {
+  will-change: transform, opacity, clip-path;
+  transition-property: transform, opacity, clip-path;
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.zoom-in {
+  opacity: 0;
+  transform: scale(0.88) translate3d(0, 10px, 0);
+}
+.zoom-in.visible {
+  opacity: 1;
+  transform: scale(1) translate3d(0, 0, 0);
+}
+
+.zoom-out {
+  opacity: 0;
+  transform: scale(1.12) translate3d(0, -10px, 0);
+}
+.zoom-out.visible {
+  opacity: 1;
+  transform: scale(1) translate3d(0, 0, 0);
+}
+
+.slide-in-up {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+.slide-in-up.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.slide-in-left {
+  opacity: 0;
+  transform: translate3d(-32px, 0, 0);
+}
+.slide-in-left.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.slide-in-right {
+  opacity: 0;
+  transform: translate3d(32px, 0, 0);
+}
+.slide-in-right.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.circle-reveal {
+  opacity: 0;
+  clip-path: circle(0% at 50% 50%);
+}
+.circle-reveal.visible {
+  opacity: 1;
+  clip-path: circle(120% at 50% 50%);
+  transition-duration: 0.65s;
+}
+
+.spread-reveal {
+  opacity: 0;
+  transform: scaleX(0.85) scaleY(0.9);
+}
+.spread-reveal.visible {
+  opacity: 1;
+  transform: scaleX(1) scaleY(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-reveal,
+  .zoom-in,
+  .zoom-out,
+  .slide-in-up,
+  .slide-in-left,
+  .slide-in-right,
+  .circle-reveal,
+  .spread-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}
+
+

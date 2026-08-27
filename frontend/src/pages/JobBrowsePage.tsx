@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { MapPin, IndianRupee, Sparkles, Search, Filter } from 'lucide-react';
 import PressButton from '../components/PressButton';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, TiltCard, RibbonBadge } from '../components/ui';
+import { EmptyState, TiltCard, RibbonBadge, SectionRevealContainer } from '../components/ui';
 import { useLivePoll } from '../hooks/useLivePoll';
 import { jobsApi, type Job } from '../lib/jobsApi';
 
@@ -50,27 +50,30 @@ export default function JobBrowsePage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
       {/* Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line/60 pb-6">
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-brand-muted/60 text-brand text-[11px] font-semibold uppercase tracking-wider">
-              Career Marketplace
-            </span>
-            <LiveDot />
+      <SectionRevealContainer effect="slide-up" delayMs={50}>
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line/60 pb-6">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-brand-muted/60 text-brand text-[11px] font-semibold uppercase tracking-wider">
+                Career Marketplace
+              </span>
+              <LiveDot />
+            </div>
+            <h1 className="text-3xl font-extrabold font-display text-ink tracking-tight">Enterprise Java Roles</h1>
+            {updatedAt && (
+              <p className="text-xs text-ink-muted">
+                Live matching synced at {updatedAt.toLocaleTimeString()}
+              </p>
+            )}
           </div>
-          <h1 className="text-3xl font-extrabold font-display text-ink tracking-tight">Enterprise Java Roles</h1>
-          {updatedAt && (
-            <p className="text-xs text-ink-muted">
-              Live matching synced at {updatedAt.toLocaleTimeString()}
-            </p>
-          )}
-        </div>
-        <PressButton variant="ghost" onClick={() => void refresh(false)} className="self-start sm:self-auto">
-          Refresh Marketplace
-        </PressButton>
-      </header>
+          <PressButton variant="ghost" onClick={() => void refresh(false)} className="self-start sm:self-auto">
+            Refresh Marketplace
+          </PressButton>
+        </header>
+      </SectionRevealContainer>
 
       {/* Search & Filter Bar */}
+      <SectionRevealContainer effect="spread" delayMs={100}>
       <div className="space-y-4">
         <div className="relative max-w-xl">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted" />
@@ -103,6 +106,7 @@ export default function JobBrowsePage() {
           ))}
         </div>
       </div>
+    </SectionRevealContainer>
 
       {error && (
         <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-danger flex items-center gap-2">

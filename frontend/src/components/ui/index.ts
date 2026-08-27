@@ -23,5 +23,7 @@ export { WaveSectionDivider } from './WaveSectionDivider';
 export { RadarScanMeter } from './RadarScanMeter';
 export { LottieIcon } from './LottieIcon';
 export { PageTransition, AnimatedSection } from './PageTransition';
+export { SectionRevealContainer } from './SectionRevealContainer';
+
 
 

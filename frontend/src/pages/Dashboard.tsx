@@ -15,7 +15,7 @@ import {
 import PressButton from '../components/PressButton';
 import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
-import { TiltCard, OrganicStatCard } from '../components/ui';
+import { TiltCard, OrganicStatCard, SectionRevealContainer } from '../components/ui';
 import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
 import { heroZoomIn, gridExplodeContainer, gridExplodeItem } from '../lib/motion';
 
@@ -121,12 +121,14 @@ export default function Dashboard() {
         </div>
 
         {/* Live Organic Statistics Grid */}
-        <div data-cursor-zone="dashboard" className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <OrganicStatCard label="Tech Jobs Analyzed" value="10,000+" variant="blob" gradient="brand" />
-          <OrganicStatCard label="ATS Accuracy" value="98%" variant="hexagon" gradient="violet" />
-          <OrganicStatCard label="Skill Matching" value="Jaccard" variant="blob" gradient="cyan" />
-          <OrganicStatCard label="Portals" value="3 Roles" variant="hexagon" gradient="emerald" />
-        </div>
+        <SectionRevealContainer effect="zoom-in" delayMs={100}>
+          <div data-cursor-zone="dashboard" className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <OrganicStatCard label="Tech Jobs Analyzed" value="10,000+" variant="blob" gradient="brand" />
+            <OrganicStatCard label="ATS Accuracy" value="98%" variant="hexagon" gradient="violet" />
+            <OrganicStatCard label="Skill Matching" value="Jaccard" variant="blob" gradient="cyan" />
+            <OrganicStatCard label="Portals" value="3 Roles" variant="hexagon" gradient="emerald" />
+          </div>
+        </SectionRevealContainer>
 
         {/* Interactive Feature Grid */}
         <div data-cursor-zone="jobs" className="space-y-6">
