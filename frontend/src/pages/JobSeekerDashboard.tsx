@@ -28,6 +28,7 @@ import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { RecommendedJobsChromaSection } from '../components/RecommendedJobsChromaSection';
 import { MilestoneFolderSection } from '../components/MilestoneFolderSection';
+import InteractiveCardStack from '../components/InteractiveCardStack';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
 
@@ -413,6 +414,9 @@ export default function JobSeekerDashboard() {
         profileCompletion={data.profileCompletionPercent}
         readinessScore={data.careerReadinessScore}
       />
+
+      {/* Interactive Card Stack Deck */}
+      <InteractiveCardStack />
 
       {/* Charts Grid — Phase 4 Motion System */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
