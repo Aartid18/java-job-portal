@@ -17,7 +17,9 @@ import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
 import { TiltCard, OrganicStatCard, SectionRevealContainer } from '../components/ui';
 import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
-import { heroZoomIn, gridExplodeContainer, gridExplodeItem } from '../lib/motion';
+import { gridExplodeContainer, gridExplodeItem } from '../lib/motion';
+
+import MaskedHeading from '../components/reactbits/MaskedHeading';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -84,14 +86,19 @@ export default function Dashboard() {
             <Hero3DScene />
           </div>
 
-          <motion.h1
-            variants={heroZoomIn}
-            initial="hidden"
-            animate="visible"
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display text-display-gradient tracking-tight leading-[1.1]"
-          >
-            Empowering Tech Careers & Modern Hiring
-          </motion.h1>
+          <MaskedHeading
+            text="Empowering Tech Careers & Modern Hiring"
+            tag="h1"
+            mediaType="image"
+            fillScale={1.3}
+            parallax={34}
+            reveal="rise"
+            trigger="view"
+            duration={1.2}
+            align="center"
+            textScale={0.09}
+            className="my-2"
+          />
 
           <motion.p
             initial={{ opacity: 0, y: 15 }}
