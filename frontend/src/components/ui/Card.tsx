@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 export function Card({
   children,
@@ -9,7 +10,18 @@ export function Card({
   className?: string;
   hover?: boolean;
 }) {
-  return <div className={`ui-panel p-6 ${hover ? '' : 'hover:shadow-[var(--shadow-1)]'} ${className}`}>{children}</div>;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      whileHover={hover ? { y: -4, scale: 1.015 } : undefined}
+      transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+      className={`ui-panel p-6 transition-all duration-300 ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 export function StatCard({
@@ -23,7 +35,7 @@ export function StatCard({
 }) {
   return (
     <Card className="flex items-center gap-4">
-      <div className="w-12 h-12 rounded-[12px] bg-brand-muted text-brand flex items-center justify-center">
+      <div className="w-12 h-12 rounded-[12px] bg-brand-muted text-brand flex items-center justify-center shadow-xs">
         {icon}
       </div>
       <div className="space-y-1">

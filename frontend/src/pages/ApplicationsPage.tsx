@@ -82,7 +82,14 @@ export default function ApplicationsPage() {
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-ink-muted">
                 {a.compatibilityScore != null && <span>Match: {Math.round(a.compatibilityScore)}%</span>}
-                {a.appliedAt && <span>Applied {new Date(a.appliedAt).toLocaleDateString()}</span>}
+                {a.appliedAt && (
+                  <span>
+                    Applied {(() => {
+                      const d = new Date(a.appliedAt);
+                      return isNaN(d.getTime()) ? 'Recently' : d.toLocaleDateString();
+                    })()}
+                  </span>
+                )}
               </div>
               {a.skillGapAnalysis && (
                 <p className="text-xs text-ink-faint whitespace-pre-wrap">{a.skillGapAnalysis}</p>

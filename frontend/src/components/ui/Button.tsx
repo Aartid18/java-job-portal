@@ -1,11 +1,12 @@
 import { useRef, type ButtonHTMLAttributes, type MouseEvent } from 'react';
+import { motion } from 'framer-motion';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'ghost' | 'soft';
   loading?: boolean;
 };
 
-/** Primary design-system button (alias of PressButton behavior). */
+/** Primary design-system button with Framer Motion tactile micro-interactions. */
 export default function Button({
   variant = 'primary',
   className = '',
@@ -35,16 +36,19 @@ export default function Button({
   };
 
   return (
-    <button
+    <motion.button
       ref={ref}
       type={type}
+      whileHover={{ scale: 1.025, y: -1 }}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       className={`press-btn press-btn--${variant} ${className}`}
       onClick={handleClick}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      {...props}
+      {...(props as any)}
     >
       <span className="press-btn__label">{loading ? 'Loading…' : children}</span>
-    </button>
+    </motion.button>
   );
 }

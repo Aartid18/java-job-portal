@@ -95,7 +95,12 @@ export default function LiveActivityFeed({ mode }: { mode: 'seeker' | 'recruiter
                 <p className="text-sm font-semibold text-ink truncate">{item.title}</p>
                 <p className="text-xs text-ink-muted line-clamp-2">{item.detail}</p>
                 {item.at && (
-                  <p className="text-[11px] text-ink-faint mt-1">{new Date(item.at).toLocaleString()}</p>
+                  <p className="text-[11px] text-ink-faint mt-1">
+                    {(() => {
+                      const d = new Date(item.at);
+                      return isNaN(d.getTime()) ? 'Recently' : d.toLocaleString();
+                    })()}
+                  </p>
                 )}
               </div>
               {item.href && (
