@@ -22,7 +22,8 @@ import {
 import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, Skeleton, StatCard, AnimatedSection } from '../components/ui';
+import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary } from '../components/ui';
+import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
@@ -153,10 +154,19 @@ export default function JobSeekerDashboard() {
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div className="space-y-2">
             <p className="text-label">Career workspace</p>
-            <div className="flex items-center gap-2">
-              <h1 className="text-h1 text-ink">
-                Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}
-              </h1>
+            <div className="flex items-center gap-3">
+              <ErrorBoundary fallback={<h1 className="text-3xl font-extrabold font-display text-ink">Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}</h1>}>
+                <MaskedHeading
+                  text={`Welcome back${data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}`}
+                  tag="h1"
+                  reveal="rise"
+                  trigger="view"
+                  duration={0.9}
+                  stagger={0.08}
+                  align="left"
+                  textScale={0.075}
+                />
+              </ErrorBoundary>
               <LiveDot />
             </div>
             <p className="text-ink-muted">

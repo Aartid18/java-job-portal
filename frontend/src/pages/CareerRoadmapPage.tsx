@@ -22,7 +22,8 @@ import {
   type RoadmapWeek,
 } from '../lib/careerRoadmapApi';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
-import { AnimatedSection } from '../components/ui';
+import { AnimatedSection, ErrorBoundary } from '../components/ui';
+import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { getErrorMessage } from '../lib/api';
 
 export const CareerRoadmapPage: React.FC = () => {
@@ -151,9 +152,18 @@ export const CareerRoadmapPage: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
               AI Skill-Gap & 30-Day Learning Journey
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Personalized Career Roadmap
-            </h1>
+            <ErrorBoundary fallback={<h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">Personalized Career Roadmap</h1>}>
+              <MaskedHeading
+                text="Personalized Career Roadmap"
+                tag="h1"
+                reveal="rise"
+                trigger="view"
+                duration={0.9}
+                stagger={0.08}
+                align="left"
+                textScale={0.075}
+              />
+            </ErrorBoundary>
             <p className="text-sm sm:text-base text-slate-300">
               Targeting{' '}
               <strong className="text-white underline decoration-indigo-400 underline-offset-4">

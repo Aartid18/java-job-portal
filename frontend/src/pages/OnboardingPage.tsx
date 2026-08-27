@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import PressButton from '../components/PressButton';
+import { ErrorBoundary } from '../components/ui';
+import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { useAuth, getErrorMessage } from '../context/AuthContext';
 import { onboardingApi } from '../lib/onboardingApi';
 import { tokenStorage } from '../lib/tokenStorage';
@@ -290,7 +292,18 @@ export default function OnboardingPage() {
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-10 space-y-6">
       <header className="space-y-3">
         <p className="text-label">Career profile setup</p>
-        <h1 className="text-h1 text-ink">Let&apos;s build your career profile</h1>
+        <ErrorBoundary fallback={<h1 className="text-3xl font-extrabold font-display text-ink">Let&apos;s build your career profile</h1>}>
+          <MaskedHeading
+            text="Let's build your career profile"
+            tag="h1"
+            reveal="rise"
+            trigger="view"
+            duration={0.9}
+            stagger={0.08}
+            align="left"
+            textScale={0.075}
+          />
+        </ErrorBoundary>
         <CompletionBar percent={percent} />
         <StepRail
           steps={[...CANDIDATE_STEPS]}

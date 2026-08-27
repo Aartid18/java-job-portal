@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { MapPin, IndianRupee, Sparkles, Search, Filter } from 'lucide-react';
 import PressButton from '../components/PressButton';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, TiltCard, RibbonBadge, SectionRevealContainer } from '../components/ui';
+import { EmptyState, TiltCard, RibbonBadge, SectionRevealContainer, ErrorBoundary } from '../components/ui';
+import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { useLivePoll } from '../hooks/useLivePoll';
 import { jobsApi, type Job } from '../lib/jobsApi';
 
@@ -59,7 +60,18 @@ export default function JobBrowsePage() {
               </span>
               <LiveDot />
             </div>
-            <h1 className="text-3xl font-extrabold font-display text-ink tracking-tight">Enterprise Java Roles</h1>
+            <ErrorBoundary fallback={<h1 className="text-3xl font-extrabold font-display text-ink tracking-tight">Enterprise Java Roles</h1>}>
+              <MaskedHeading
+                text="Enterprise Java Roles"
+                tag="h1"
+                reveal="rise"
+                trigger="view"
+                duration={0.9}
+                stagger={0.08}
+                align="left"
+                textScale={0.075}
+              />
+            </ErrorBoundary>
             {updatedAt && (
               <p className="text-xs text-ink-muted">
                 Live matching synced at {updatedAt.toLocaleTimeString()}

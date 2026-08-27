@@ -4,7 +4,8 @@ import { Briefcase, Search, Users } from 'lucide-react';
 import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, Skeleton, StatCard } from '../components/ui';
+import { EmptyState, Skeleton, StatCard, ErrorBoundary } from '../components/ui';
+import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { getErrorMessage } from '../lib/api';
 import { applicationsApi, type Application } from '../lib/applicationsApi';
 import { jobsApi, type Job } from '../lib/jobsApi';
@@ -136,8 +137,19 @@ export default function RecruiterDashboard() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
       <header className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-5">
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <h1 className="text-h1 text-ink">Recruiter Hub</h1>
+          <div className="flex items-center gap-3">
+            <ErrorBoundary fallback={<h1 className="text-3xl font-extrabold font-display text-ink">Recruiter Hub</h1>}>
+              <MaskedHeading
+                text="Recruiter Hub"
+                tag="h1"
+                reveal="rise"
+                trigger="view"
+                duration={0.9}
+                stagger={0.08}
+                align="left"
+                textScale={0.075}
+              />
+            </ErrorBoundary>
             <LiveDot />
           </div>
           <p className="text-ink-muted">Post roles and review ranked applicants — list auto-syncs.</p>

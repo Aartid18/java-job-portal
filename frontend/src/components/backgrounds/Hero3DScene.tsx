@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAppReducedMotion } from '../../lib/motion';
 
+import { Ballpit } from '../reactbits/Ballpit';
+import { ErrorBoundary } from '../ui';
+
 export function Hero3DScene() {
   const shouldReduceMotion = useAppReducedMotion();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -20,20 +23,23 @@ export function Hero3DScene() {
   }, [shouldReduceMotion]);
 
   return (
-    <div className="relative w-full max-w-lg mx-auto aspect-square flex items-center justify-center p-4 overflow-visible">
-      {/* Outer Glowing Ambient Orb */}
-      <motion.div
-        className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-500/20 via-brand/20 to-blue-500/20 blur-3xl"
-        animate={
-          shouldReduceMotion
-            ? undefined
-            : {
-                scale: [1, 1.08, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }
-        }
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-      />
+    <div className="relative w-full max-w-xl mx-auto min-h-[380px] sm:min-h-[420px] flex items-center justify-center p-4 overflow-hidden rounded-3xl border border-line/60 bg-surface-2/30 backdrop-blur-xl shadow-2xl">
+      {/* Low-Density Interactive Ballpit Background (60 Particles) */}
+      <div className="absolute inset-0 z-0 opacity-65 pointer-events-auto">
+        <ErrorBoundary>
+          <Ballpit
+            count={60}
+            gravity={0.5}
+            friction={0.99}
+            wallBounce={0.95}
+            followCursor={true}
+            colors={[0x4f46e5, 0x7c3aed, 0x06b6d4, 0xd97706]}
+            minSize={0.6}
+            maxSize={1.1}
+            lightIntensity={200}
+          />
+        </ErrorBoundary>
+      </div>
 
       {/* 3D Interactive Isometric Card & Coffee Machine Illustration Platform */}
       <motion.div
