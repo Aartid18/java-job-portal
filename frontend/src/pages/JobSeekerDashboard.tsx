@@ -22,7 +22,7 @@ import {
 import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary, CandidateProfileCard } from '../components/ui';
+import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary, CandidateProfileCard, ViewportReveal } from '../components/ui';
 import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { getErrorMessage } from '../lib/api';
@@ -159,7 +159,8 @@ export default function JobSeekerDashboard() {
         />
       </AnimatedSection>
 
-      <AnimatedSection variant="fadeUp" delay={0.08}>
+      {/* Dashboard Welcome/Hero Section Reveal */}
+      <ViewportReveal delay={0.05} yOffset={30}>
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div className="space-y-2">
             <p className="text-label">Career workspace</p>
@@ -197,9 +198,10 @@ export default function JobSeekerDashboard() {
             </Link>
           </div>
         </header>
-      </AnimatedSection>
+      </ViewportReveal>
 
-      <AnimatedSection variant="stagger" delay={0.1}>
+      {/* Dashboard Statistics Section Reveal */}
+      <ViewportReveal delay={0.1} yOffset={30}>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <StatCard
@@ -230,7 +232,7 @@ export default function JobSeekerDashboard() {
             />
           </div>
         </div>
-      </AnimatedSection>
+      </ViewportReveal>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="ui-panel p-6 reveal space-y-4">

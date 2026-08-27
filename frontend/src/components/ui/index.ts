@@ -27,6 +27,7 @@ export { SectionRevealContainer } from './SectionRevealContainer';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as ExpandableProfileCard } from './ExpandableProfileCard';
 export { CandidateProfileCard } from './CandidateProfileCard';
+export { ViewportReveal } from './ViewportReveal';
 
 
 
