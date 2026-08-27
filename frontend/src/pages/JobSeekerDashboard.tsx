@@ -26,6 +26,7 @@ import LiveDot from '../components/LiveDot';
 import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary, CandidateProfileCard, ViewportReveal } from '../components/ui';
 import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
+import { RecommendedJobsChromaSection } from '../components/RecommendedJobsChromaSection';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
 
@@ -401,6 +402,9 @@ export default function JobSeekerDashboard() {
           )}
         </ViewportReveal>
       </div>
+
+      {/* Recommended Open Roles — React Bits ChromaGrid Integration */}
+      <RecommendedJobsChromaSection />
 
       {/* Charts Grid — Phase 4 Motion System */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

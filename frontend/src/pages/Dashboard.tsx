@@ -20,6 +20,7 @@ import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
 import { gridExplodeContainer, gridExplodeItem } from '../lib/motion';
 
 import MaskedHeading from '../components/reactbits/MaskedHeading';
+import { RecommendedJobsChromaSection } from '../components/RecommendedJobsChromaSection';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -185,6 +186,9 @@ export default function Dashboard() {
             <OrganicStatCard label="Portals" value="3 Roles" variant="hexagon" gradient="emerald" />
           </div>
         </ViewportReveal>
+
+        {/* Recommended Open Roles — React Bits ChromaGrid Integration */}
+        <RecommendedJobsChromaSection />
 
         {/* Interactive Feature Grid */}
         <div data-cursor-zone="jobs" className="space-y-6">
