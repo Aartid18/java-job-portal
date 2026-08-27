@@ -102,67 +102,67 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
         </filter>
 
         <filter id="textShadow">
-          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.8"/>
+          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.85"/>
         </filter>
       </defs>
 
       <!-- Card Base Surface -->
-      <rect width="100%" height="100%" fill="#0B0C10" rx="52" />
+      <rect width="100%" height="100%" fill="#090A0F" rx="52" />
 
-      <!-- Top Color Area (30% Height Header) -->
-      <rect width="100%" height="380" fill="url(#cardGrad)" rx="52" />
+      <!-- Top Color Area (25% Height Header) -->
+      <rect width="100%" height="320" fill="url(#cardGrad)" rx="52" />
 
       <!-- Grain Overlay on Color Area -->
-      <rect width="100%" height="380" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.25" rx="52" />
+      <rect width="100%" height="320" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.25" rx="52" />
 
       <!-- Translucent Department Initial Letter in Color Area -->
-      <text x="830" y="320" font-family="system-ui, sans-serif" font-size="380" font-weight="900" fill="#ffffff" opacity="0.16" text-anchor="end">
+      <text x="830" y="270" font-family="system-ui, sans-serif" font-size="340" font-weight="900" fill="#ffffff" opacity="0.18" text-anchor="end">
         ${dept.initial}
       </text>
 
       <!-- Top Accent Line -->
-      <rect x="52" y="48" width="796" height="4" fill="#ffffff" opacity="0.4" />
+      <rect x="52" y="44" width="796" height="4" fill="#ffffff" opacity="0.4" />
 
-      <!-- Top Accent Department Name -->
-      <text x="64" y="110" font-family="monospace" font-size="22" font-weight="900" fill="#ffffff" opacity="0.9" letter-spacing="3">
-        JAVA JOB PORTAL • OPEN ROLE
+      <!-- Top Accent Header Text -->
+      <text x="64" y="96" font-family="monospace" font-size="22" font-weight="900" fill="#ffffff" opacity="0.95" letter-spacing="3">
+        JAVA JOB PORTAL • FEATURED ROLE
       </text>
 
-      <!-- Bottom Text Area (70% Height Solid Dark Content Surface) -->
-      <rect x="32" y="360" width="836" height="900" rx="44" fill="#0B0C10" opacity="0.98" stroke="${dept.color}" stroke-opacity="0.4" stroke-width="3" />
+      <!-- Bottom Text Area (75% Height Solid Dark Content Surface - 100% VISIBLE) -->
+      <rect x="28" y="280" width="844" height="980" rx="44" fill="#090A0F" opacity="1.0" stroke="${dept.color}" stroke-opacity="0.5" stroke-width="4" />
 
       <!-- Department Badge in Text Area -->
-      <rect x="64" y="410" width="280" height="64" rx="32" fill="#1B1D27" stroke="${dept.color}" stroke-opacity="0.3" stroke-width="2" />
-      <text x="204" y="451" font-family="monospace" font-size="22" font-weight="900" fill="${dept.color}" text-anchor="middle" letter-spacing="3">
+      <rect x="64" y="330" width="300" height="68" rx="34" fill="#161822" stroke="${dept.color}" stroke-dasharray="0" stroke-width="2" />
+      <text x="214" y="373" font-family="monospace" font-size="24" font-weight="900" fill="${dept.color}" text-anchor="middle" letter-spacing="3">
         ${dept.name.toUpperCase()}
       </text>
 
-      <!-- Job Title (HD Ultra-Large 56px Text) -->
+      <!-- Job Title (HD Ultra-Large 58px Crisp Text) -->
       ${
         line2
-          ? `<text x="64" y="555" font-family="system-ui, -apple-system, sans-serif" font-size="54" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
-             <text x="64" y="625" font-family="system-ui, -apple-system, sans-serif" font-size="54" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
-          : `<text x="64" y="585" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
+          ? `<text x="64" y="475" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
+             <text x="64" y="545" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
+          : `<text x="64" y="505" font-family="system-ui, -apple-system, sans-serif" font-size="58" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
       }
 
       <!-- Metadata Lines -->
-      <text x="64" y="720" font-family="sans-serif" font-size="30" font-weight="700" fill="#E2E8F0">
+      <text x="64" y="640" font-family="sans-serif" font-size="32" font-weight="700" fill="#E2E8F0">
         Full-Time Position • Remote / Hybrid
       </text>
 
-      <text x="64" y="780" font-family="sans-serif" font-size="26" font-weight="600" fill="#94A3B8">
+      <text x="64" y="700" font-family="sans-serif" font-size="28" font-weight="600" fill="#94A3B8">
         Required: Java 21, Spring Boot 3, Microservices
       </text>
 
       <!-- Dynamic Feature Badge -->
-      <rect x="64" y="830" width="340" height="52" rx="16" fill="${dept.color}" opacity="0.15" />
-      <text x="80" y="865" font-family="sans-serif" font-size="22" font-weight="800" fill="${dept.color}">
+      <rect x="64" y="750" width="360" height="56" rx="18" fill="${dept.color}" opacity="0.18" />
+      <text x="80" y="788" font-family="sans-serif" font-size="24" font-weight="800" fill="${dept.color}">
         ✓ 95% Match • Urgent Hiring
       </text>
 
       <!-- Action Button inside Text Area -->
-      <rect x="64" y="1080" width="708" height="110" rx="30" fill="${dept.color}" />
-      <text x="418" y="1148" font-family="monospace" font-size="30" font-weight="900" fill="#000000" text-anchor="middle" letter-spacing="2">
+      <rect x="64" y="1080" width="716" height="114" rx="30" fill="${dept.color}" />
+      <text x="422" y="1150" font-family="monospace" font-size="32" font-weight="900" fill="#000000" text-anchor="middle" letter-spacing="2">
         APPLY FOR POSITION →
       </text>
     </svg>
@@ -178,7 +178,7 @@ interface CircularGallerySectionProps {
 }
 
 export function CircularGallerySection({
-  bend = 0.3,
+  bend = 0.2,
   scrollSpeed = 0.006,
   scrollEase = 0.07,
 }: CircularGallerySectionProps) {
@@ -195,10 +195,10 @@ export function CircularGallerySection({
     gl.clearColor(0, 0, 0, 0);
 
     const camera = new Camera(gl, { fov: 45 });
-    camera.position.z = 6.2;
+    camera.position.z = 7.2;
 
     const scene = new Transform();
-    const planeGeometry = new Plane(gl, { width: 2.2, height: 3.0, widthSegments: 20, heightSegments: 20 });
+    const planeGeometry = new Plane(gl, { width: 2.5, height: 3.5, widthSegments: 20, heightSegments: 20 });
 
     const vertexShader = /* glsl */ `
       attribute vec3 position;
@@ -216,8 +216,8 @@ export function CircularGallerySection({
         vec3 pos = position;
 
         float xDist = pos.x + uOffset;
-        pos.z -= pow(xDist, 2.0) * (uBend * 0.025);
-        pos.y -= pow(xDist, 2.0) * (uBend * 0.008);
+        pos.z -= pow(xDist, 2.0) * (uBend * 0.02);
+        pos.y -= pow(xDist, 2.0) * (uBend * 0.005);
 
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
       }
@@ -262,7 +262,7 @@ export function CircularGallerySection({
     });
 
     const totalCards = cards.length;
-    const spacing = 2.5;
+    const spacing = 2.8;
     const scroll = { current: 0, target: 0 };
     let isDragging = false;
     let startPos = 0;
@@ -316,9 +316,9 @@ export function CircularGallerySection({
       camera.perspective({ aspect: width / height });
 
       if (width < 768) {
-        camera.position.z = 7.8;
+        camera.position.z = 9.0;
       } else {
-        camera.position.z = 6.2;
+        camera.position.z = 7.2;
       }
     };
 
@@ -340,9 +340,9 @@ export function CircularGallerySection({
         card.mesh.program.uniforms.uOffset.value = x;
 
         const distFromCenter = Math.abs(x);
-        card.mesh.rotation.y = -x * 0.03;
+        card.mesh.rotation.y = -x * 0.02;
 
-        const scale = Math.max(0.92, 1 - distFromCenter * 0.025);
+        const scale = Math.max(0.94, 1 - distFromCenter * 0.02);
         card.mesh.scale.set(scale, scale, scale);
       });
 
@@ -381,12 +381,12 @@ export function CircularGallerySection({
         </p>
       </div>
 
-      {/* WebGL Canvas Container */}
+      {/* WebGL Canvas Container (Expanded 660px Height for Full Card Visibility) */}
       <div
         ref={containerRef}
         tabIndex={0}
         aria-label="Interactive WebGL Circular Roles Gallery. Drag or use arrow keys to navigate."
-        className="relative w-full h-[380px] sm:h-[480px] cursor-grab active:cursor-grabbing select-none focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] focus:ring-offset-2 focus:ring-offset-[#12131A] rounded-2xl"
+        className="relative w-full h-[540px] sm:h-[660px] cursor-grab active:cursor-grabbing select-none focus:outline-none focus:ring-2 focus:ring-[#2DD4BF] focus:ring-offset-2 focus:ring-offset-[#12131A] rounded-2xl"
       >
         <div className="absolute top-3 right-4 font-mono text-[11px] text-[#64748B] bg-[#1B1D27]/80 backdrop-blur-md px-3 py-1 rounded-full border border-line/40 pointer-events-none z-10">
           Drag / Scroll wheel →
