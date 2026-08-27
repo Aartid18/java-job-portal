@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Briefcase,
   CheckCircle2,
@@ -200,39 +201,100 @@ export default function JobSeekerDashboard() {
         </header>
       </ViewportReveal>
 
-      {/* Dashboard Statistics Section Reveal */}
-      <ViewportReveal delay={0.1} yOffset={30}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <StatCard
-              icon={<Target size={22} />}
-              label="Career Readiness"
-              value={`${data.careerReadinessScore}`}
-            />
-          </div>
-          <div>
-            <StatCard
-              icon={<TrendingUp size={22} />}
-              label="Profile Strength"
-              value={`${data.profileCompletionPercent}%`}
-            />
-          </div>
-          <div>
-            <StatCard
-              icon={<FileText size={22} />}
-              label="Resume Score"
-              value={`${data.resumeScore}`}
-            />
-          </div>
-          <div>
-            <StatCard
-              icon={<Briefcase size={22} />}
-              label="Applications"
-              value={`${data.applicationCount}`}
-            />
-          </div>
-        </div>
-      </ViewportReveal>
+      {/* Dashboard Statistics Section — Phase 3 Staggered Entrance */}
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={{
+          hidden: { opacity: 1 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.05,
+            },
+          },
+        }}
+        className="grid grid-cols-1 md:grid-cols-4 gap-4"
+      >
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 25, scale: 0.96 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+            },
+          }}
+          whileHover={{ y: -5, scale: 1.015 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+        >
+          <StatCard
+            icon={<Target size={22} />}
+            label="Career Readiness"
+            value={`${data.careerReadinessScore}`}
+          />
+        </motion.div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 25, scale: 0.96 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+            },
+          }}
+          whileHover={{ y: -5, scale: 1.015 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+        >
+          <StatCard
+            icon={<TrendingUp size={22} />}
+            label="Profile Strength"
+            value={`${data.profileCompletionPercent}%`}
+          />
+        </motion.div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 25, scale: 0.96 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+            },
+          }}
+          whileHover={{ y: -5, scale: 1.015 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+        >
+          <StatCard
+            icon={<FileText size={22} />}
+            label="Resume Score"
+            value={`${data.resumeScore}`}
+          />
+        </motion.div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 25, scale: 0.96 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+            },
+          }}
+          whileHover={{ y: -5, scale: 1.015 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+        >
+          <StatCard
+            icon={<Briefcase size={22} />}
+            label="Applications"
+            value={`${data.applicationCount}`}
+          />
+        </motion.div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="ui-panel p-6 reveal space-y-4">
