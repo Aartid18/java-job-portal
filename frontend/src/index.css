@@ -822,6 +822,21 @@ body {
   animation: scale-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
+/* Animated Gradient Text Utility — Phase 11 / Step 11 */
+.animated-gradient-text {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* ==========================================================================
    Lightweight GPU-Accelerated Section Reveal System (IntersectionObserver)
    ========================================================================== */
