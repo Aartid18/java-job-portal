@@ -62,8 +62,8 @@ const DEFAULT_JOB_ROLES: JobCardData[] = [
 ];
 
 function generateCardSvgUri(title: string, dept: DepartmentInfo) {
-  const svgWidth = 500;
-  const svgHeight = 700;
+  const svgWidth = 800;
+  const svgHeight = 1100;
 
   const escapeXml = (str: string) =>
     str.replace(/[<>&'"]/g, (c) => {
@@ -81,7 +81,7 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
   const words = title.split(' ');
   let line1 = title;
   let line2 = '';
-  if (title.length > 20 && words.length > 2) {
+  if (title.length > 18 && words.length > 2) {
     const mid = Math.ceil(words.length / 2);
     line1 = words.slice(0, mid).join(' ');
     line2 = words.slice(mid).join(' ');
@@ -96,54 +96,54 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
         </linearGradient>
 
         <filter id="noiseFilter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" stitchTiles="stitch" />
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.1 0" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" stitchTiles="stitch" />
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.08 0" />
           <feComposite operator="in" in2="SourceGraphic" />
         </filter>
 
         <filter id="textShadow">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.6"/>
+          <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.8"/>
         </filter>
       </defs>
 
       <!-- Card Background Gradient -->
-      <rect width="100%" height="100%" fill="url(#cardGrad)" rx="32" />
+      <rect width="100%" height="100%" fill="url(#cardGrad)" rx="48" />
 
       <!-- Grain Overlay -->
-      <rect width="100%" height="100%" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.3" rx="32" />
+      <rect width="100%" height="100%" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.25" rx="48" />
 
       <!-- Translucent Department Initial Letter -->
-      <text x="460" y="210" font-family="serif" font-size="280" font-weight="800" fill="#ffffff" opacity="0.13" text-anchor="end">
+      <text x="740" y="340" font-family="sans-serif" font-size="420" font-weight="900" fill="#ffffff" opacity="0.14" text-anchor="end">
         ${dept.initial}
       </text>
 
       <!-- Top Accent Line -->
-      <rect x="32" y="32" width="436" height="2" fill="#ffffff" opacity="0.3" />
+      <rect x="48" y="48" width="704" height="4" fill="#ffffff" opacity="0.4" />
 
       <!-- Department Badge -->
-      <rect x="36" y="54" width="160" height="36" rx="18" fill="#0B0C10" opacity="0.85" />
-      <text x="116" y="77" font-family="monospace" font-size="13" font-weight="700" fill="${dept.color}" text-anchor="middle" letter-spacing="2">
+      <rect x="52" y="80" width="250" height="56" rx="28" fill="#000000" opacity="0.88" />
+      <text x="177" y="116" font-family="monospace" font-size="20" font-weight="900" fill="${dept.color}" text-anchor="middle" letter-spacing="3">
         ${dept.name.toUpperCase()}
       </text>
 
-      <!-- Bottom Card Content Dark Glass Banner -->
-      <rect x="24" y="440" width="452" height="236" rx="24" fill="#0B0C10" opacity="0.94" stroke="#ffffff" stroke-opacity="0.1" />
+      <!-- Bottom Card Content Dark Solid Glass Box -->
+      <rect x="36" y="660" width="728" height="390" rx="36" fill="#000000" opacity="0.96" stroke="#ffffff" stroke-opacity="0.15" stroke-width="2" />
 
-      <!-- Job Title (Crisp, High-Contrast Large Text) -->
+      <!-- Job Title (Crisp, High-Contrast Ultra-Large Text) -->
       ${
         line2
-          ? `<text x="48" y="495" font-family="serif" font-size="30" font-weight="800" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
-             <text x="48" y="535" font-family="serif" font-size="30" font-weight="800" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
-          : `<text x="48" y="515" font-family="serif" font-size="32" font-weight="800" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
+          ? `<text x="72" y="755" font-family="system-ui, -apple-system, sans-serif" font-size="46" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
+             <text x="72" y="815" font-family="system-ui, -apple-system, sans-serif" font-size="46" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
+          : `<text x="72" y="785" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
       }
 
       <!-- Subtitle -->
-      <text x="48" y="585" font-family="sans-serif" font-size="16" font-weight="600" fill="#CBD5E1">
+      <text x="72" y="895" font-family="sans-serif" font-size="26" font-weight="700" fill="#E2E8F0">
         Full-time • Remote / Hybrid
       </text>
 
       <!-- CTA Action Label -->
-      <text x="48" y="635" font-family="monospace" font-size="15" font-weight="700" fill="${dept.color}" letter-spacing="1">
+      <text x="72" y="975" font-family="monospace" font-size="24" font-weight="900" fill="${dept.color}" letter-spacing="2">
         APPLY NOW →
       </text>
     </svg>
@@ -159,7 +159,7 @@ interface CircularGallerySectionProps {
 }
 
 export function CircularGallerySection({
-  bend = 0.35,
+  bend = 0.3,
   scrollSpeed = 0.006,
   scrollEase = 0.07,
 }: CircularGallerySectionProps) {
@@ -176,10 +176,10 @@ export function CircularGallerySection({
     gl.clearColor(0, 0, 0, 0);
 
     const camera = new Camera(gl, { fov: 45 });
-    camera.position.z = 7;
+    camera.position.z = 6.2;
 
     const scene = new Transform();
-    const planeGeometry = new Plane(gl, { width: 1.9, height: 2.6, widthSegments: 20, heightSegments: 20 });
+    const planeGeometry = new Plane(gl, { width: 2.2, height: 3.0, widthSegments: 20, heightSegments: 20 });
 
     const vertexShader = /* glsl */ `
       attribute vec3 position;
@@ -197,8 +197,8 @@ export function CircularGallerySection({
         vec3 pos = position;
 
         float xDist = pos.x + uOffset;
-        pos.z -= pow(xDist, 2.0) * (uBend * 0.03);
-        pos.y -= pow(xDist, 2.0) * (uBend * 0.01);
+        pos.z -= pow(xDist, 2.0) * (uBend * 0.025);
+        pos.y -= pow(xDist, 2.0) * (uBend * 0.008);
 
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
       }
@@ -243,7 +243,7 @@ export function CircularGallerySection({
     });
 
     const totalCards = cards.length;
-    const spacing = 2.25;
+    const spacing = 2.5;
     const scroll = { current: 0, target: 0 };
     let isDragging = false;
     let startPos = 0;
@@ -297,9 +297,9 @@ export function CircularGallerySection({
       camera.perspective({ aspect: width / height });
 
       if (width < 768) {
-        camera.position.z = 8.2;
+        camera.position.z = 7.8;
       } else {
-        camera.position.z = 6.8;
+        camera.position.z = 6.2;
       }
     };
 
