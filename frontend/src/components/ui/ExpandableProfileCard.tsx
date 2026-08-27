@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export interface ExpandableCardProps {
@@ -20,6 +20,15 @@ export default function ExpandableProfileCard({
 }: ExpandableCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const layoutId = id || `expandable-profile-card-${title.toLowerCase().replace(/\s+/g, '-')}`;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   return (
     <>

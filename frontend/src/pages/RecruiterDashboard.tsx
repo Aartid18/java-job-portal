@@ -163,50 +163,58 @@ export default function RecruiterDashboard() {
 
       {error && <p className="text-sm text-danger" role="alert">{error}</p>}
 
-      {showForm && (
-        <div className="ui-panel p-6 grid grid-cols-1 md:grid-cols-2 gap-3">
-          {(
-            [
-              ['title', 'Title'],
-              ['location', 'Location'],
-              ['salaryRange', 'Salary range'],
-              ['requiredSkills', 'Required skills (comma-separated)'],
-            ] as const
-          ).map(([key, label]) => (
-            <label key={key} className="block space-y-1">
-              <span className="text-sm font-medium">{label}</span>
-              <input
-                className="ui-input"
-                value={form[key]}
-                onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="ui-panel p-6 grid grid-cols-1 md:grid-cols-2 gap-3"
+          >
+            {(
+              [
+                ['title', 'Title'],
+                ['location', 'Location'],
+                ['salaryRange', 'Salary range'],
+                ['requiredSkills', 'Required skills (comma-separated)'],
+              ] as const
+            ).map(([key, label]) => (
+              <label key={key} className="block space-y-1">
+                <span className="text-sm font-medium">{label}</span>
+                <input
+                  className="ui-input"
+                  value={form[key]}
+                  onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
+                />
+              </label>
+            ))}
+            <label className="block space-y-1 md:col-span-2">
+              <span className="text-sm font-medium">Description</span>
+              <textarea
+                className="ui-input !h-auto py-2 min-h-[96px]"
+                value={form.description}
+                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               />
             </label>
-          ))}
-          <label className="block space-y-1 md:col-span-2">
-            <span className="text-sm font-medium">Description</span>
-            <textarea
-              className="ui-input !h-auto py-2 min-h-[96px]"
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-            />
-          </label>
-          <label className="block space-y-1">
-            <span className="text-sm font-medium">Years experience</span>
-            <input
-              type="number"
-              min={0}
-              className="ui-input"
-              value={form.requiredExperienceYears}
-              onChange={(e) => setForm((f) => ({ ...f, requiredExperienceYears: Number(e.target.value) }))}
-            />
-          </label>
-          <div className="flex items-end">
-            <PressButton variant="primary" disabled={saving} onClick={() => void createJob()}>
-              {saving ? 'Publishing…' : 'Publish job'}
-            </PressButton>
-          </div>
-        </div>
-      )}
+            <label className="block space-y-1">
+              <span className="text-sm font-medium">Years experience</span>
+              <input
+                type="number"
+                min={0}
+                className="ui-input"
+                value={form.requiredExperienceYears}
+                onChange={(e) => setForm((f) => ({ ...f, requiredExperienceYears: Number(e.target.value) }))}
+              />
+            </label>
+            <div className="flex items-end">
+              <PressButton variant="primary" loading={saving} onClick={() => void createJob()}>
+                Publish job
+              </PressButton>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard icon={<Briefcase size={22} />} label="Your jobs" value={String(jobs.length)} />
