@@ -774,6 +774,14 @@ export interface BallpitProps {
   [key: string]: any;
 }
 
+function isWebGLAvailable(canvas: HTMLCanvasElement): boolean {
+  try {
+    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl2') || canvas.getContext('webgl')));
+  } catch (e) {
+    return false;
+  }
+}
+
 export function Ballpit({ className = '', followCursor = true, ...props }: BallpitProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const spheresInstanceRef = useRef<any>(null);
@@ -781,13 +789,21 @@ export function Ballpit({ className = '', followCursor = true, ...props }: Ballp
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !isWebGLAvailable(canvas)) return;
 
-    spheresInstanceRef.current = createBallpit(canvas, { followCursor, ...props });
+    try {
+      spheresInstanceRef.current = createBallpit(canvas, { followCursor, ...props });
+    } catch (err) {
+      console.warn('Ballpit WebGL initialization bypassed:', err);
+    }
 
     return () => {
       if (spheresInstanceRef.current) {
-        spheresInstanceRef.current.dispose();
+        try {
+          spheresInstanceRef.current.dispose();
+        } catch (e) {
+          // ignore cleanup errors
+        }
         spheresInstanceRef.current = null;
       }
     };
@@ -799,7 +815,11 @@ export function Ballpit({ className = '', followCursor = true, ...props }: Ballp
       return;
     }
     if (spheresInstanceRef.current) {
-      spheresInstanceRef.current.updateConfig({ followCursor, ...props });
+      try {
+        spheresInstanceRef.current.updateConfig({ followCursor, ...props });
+      } catch (e) {
+        // ignore update errors
+      }
     }
   }, [props, followCursor]);
 

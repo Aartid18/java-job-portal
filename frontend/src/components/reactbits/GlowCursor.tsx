@@ -200,14 +200,29 @@ export function GlowCursor({
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
+    try {
+      const glTest = window.WebGLRenderingContext && (canvas.getContext('webgl2') || canvas.getContext('webgl'));
+      if (!glTest) return;
+    } catch (e) {
+      return;
+    }
+
     const initialConfig = propsRef.current;
-    const renderer = new Renderer({
-      canvas,
-      alpha: true,
-      dpr: Math.min(window.devicePixelRatio || 1, initialConfig.maxDevicePixelRatio)
-    });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
+    let renderer: Renderer;
+    let gl: any;
+    try {
+      renderer = new Renderer({
+        canvas,
+        alpha: true,
+        dpr: Math.min(window.devicePixelRatio || 1, initialConfig.maxDevicePixelRatio)
+      });
+      gl = renderer.gl;
+      if (!gl) return;
+      gl.clearColor(0, 0, 0, 0);
+    } catch (err) {
+      console.warn('GlowCursor WebGL initialization bypassed:', err);
+      return;
+    }
 
     const pointData = Array(MAX_POINTS * 2).fill(0);
     const points = Array.from({ length: MAX_POINTS }, () => ({ x: 0, y: 0 }));

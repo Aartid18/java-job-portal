@@ -15,7 +15,7 @@ import {
 import PressButton from '../components/PressButton';
 import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
-import { TiltCard, OrganicStatCard, SectionRevealContainer } from '../components/ui';
+import { TiltCard, OrganicStatCard, SectionRevealContainer, ErrorBoundary } from '../components/ui';
 import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
 import { gridExplodeContainer, gridExplodeItem } from '../lib/motion';
 
@@ -86,19 +86,27 @@ export default function Dashboard() {
             <Hero3DScene />
           </div>
 
-          <MaskedHeading
-            text="Empowering Tech Careers & Modern Hiring"
-            tag="h1"
-            mediaType="image"
-            fillScale={1.3}
-            parallax={34}
-            reveal="rise"
-            trigger="view"
-            duration={1.2}
-            align="center"
-            textScale={0.09}
-            className="my-2"
-          />
+          <ErrorBoundary
+            fallback={
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display text-display-gradient tracking-tight leading-[1.1] my-2">
+                Empowering Tech Careers & Modern Hiring
+              </h1>
+            }
+          >
+            <MaskedHeading
+              text="Empowering Tech Careers & Modern Hiring"
+              tag="h1"
+              mediaType="image"
+              fillScale={1.3}
+              parallax={34}
+              reveal="rise"
+              trigger="view"
+              duration={1.2}
+              align="center"
+              textScale={0.09}
+              className="my-2"
+            />
+          </ErrorBoundary>
 
           <motion.p
             initial={{ opacity: 0, y: 15 }}
