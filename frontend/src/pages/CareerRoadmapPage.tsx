@@ -22,6 +22,7 @@ import {
   type RoadmapWeek,
 } from '../lib/careerRoadmapApi';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
+import { AnimatedSection } from '../components/ui';
 import { getErrorMessage } from '../lib/api';
 
 export const CareerRoadmapPage: React.FC = () => {
@@ -139,7 +140,8 @@ export const CareerRoadmapPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Top Banner & Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-950 via-slate-900 to-violet-950 text-white p-6 sm:p-10 border border-indigo-800/40 shadow-xl">
+      <AnimatedSection variant="hero">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-950 via-slate-900 to-violet-950 text-white p-6 sm:p-10 border border-indigo-800/40 shadow-xl">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-1/3 -mb-16 w-60 h-60 rounded-full bg-violet-500/10 blur-2xl pointer-events-none" />
 
@@ -213,6 +215,7 @@ export const CareerRoadmapPage: React.FC = () => {
           </div>
         </div>
       </div>
+    </AnimatedSection>
 
       {errorMsg && (
         <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-sm text-red-600 dark:text-red-300">

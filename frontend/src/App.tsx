@@ -27,7 +27,8 @@ import { CareerRoadmapPage } from './pages/CareerRoadmapPage';
 import AdminPage from './pages/AdminPage';
 import NotificationsPage from './pages/NotificationsPage';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { PageTransition } from './components/ui';
 
 function AppRoutes() {
   const location = useLocation();
@@ -35,14 +36,7 @@ function AppRoutes() {
   return (
     <main className="relative z-10 flex-1 w-full overflow-hidden">
       <AnimatePresence mode="wait">
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-          className="w-full h-full"
-        >
+        <PageTransition key={location.pathname}>
           <Routes location={location}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<LoginPage />} />
@@ -157,7 +151,7 @@ function AppRoutes() {
             />
             <Route path="*" element={<Dashboard />} />
           </Routes>
-        </motion.div>
+        </PageTransition>
       </AnimatePresence>
     </main>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { EmptyState, Skeleton } from '../components/ui';
+import { motion } from 'framer-motion';
+import { EmptyState, Skeleton, AnimatedSection } from '../components/ui';
 import { getErrorMessage } from '../lib/api';
 import { applicationsApi, type Application } from '../lib/applicationsApi';
 
@@ -39,10 +40,12 @@ export default function ApplicationsPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <header>
-        <p className="text-label">Pipeline</p>
-        <h1 className="text-h1 text-ink">My applications</h1>
-      </header>
+      <AnimatedSection variant="fadeUp">
+        <header>
+          <p className="text-label">Pipeline</p>
+          <h1 className="text-h1 text-ink">My applications</h1>
+        </header>
+      </AnimatedSection>
 
       {error && <p className="text-sm text-danger">{error}</p>}
       {loading ? (
@@ -56,8 +59,14 @@ export default function ApplicationsPage() {
         />
       ) : (
         <ul className="space-y-3">
-          {apps.map((a) => (
-            <li key={a.id} className="ui-panel p-5 space-y-2">
+          {apps.map((a, idx) => (
+            <motion.li
+              key={a.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: idx * 0.05 }}
+              className="ui-panel p-5 space-y-2"
+            >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <button
@@ -78,7 +87,7 @@ export default function ApplicationsPage() {
               {a.skillGapAnalysis && (
                 <p className="text-xs text-ink-faint whitespace-pre-wrap">{a.skillGapAnalysis}</p>
               )}
-            </li>
+            </motion.li>
           ))}
         </ul>
       )}

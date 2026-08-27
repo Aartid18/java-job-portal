@@ -22,4 +22,6 @@ export { RibbonBadge } from './RibbonBadge';
 export { WaveSectionDivider } from './WaveSectionDivider';
 export { RadarScanMeter } from './RadarScanMeter';
 export { LottieIcon } from './LottieIcon';
+export { PageTransition, AnimatedSection } from './PageTransition';
+
 

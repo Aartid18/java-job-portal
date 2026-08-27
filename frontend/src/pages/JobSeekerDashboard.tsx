@@ -22,7 +22,7 @@ import {
 import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, Skeleton, StatCard } from '../components/ui';
+import { EmptyState, Skeleton, StatCard, AnimatedSection } from '../components/ui';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
@@ -149,65 +149,69 @@ export default function JobSeekerDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
-      <header className="reveal flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div className="space-y-2">
-          <p className="text-label">Career workspace</p>
-          <div className="flex items-center gap-2">
-            <h1 className="text-h1 text-ink">
-              Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}
-            </h1>
-            <LiveDot />
+      <AnimatedSection variant="fadeUp" delay={0.05}>
+        <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div className="space-y-2">
+            <p className="text-label">Career workspace</p>
+            <div className="flex items-center gap-2">
+              <h1 className="text-h1 text-ink">
+                Welcome back{data.fullName ? `, ${data.fullName.split(' ')[0]}` : ''}
+              </h1>
+              <LiveDot />
+            </div>
+            <p className="text-ink-muted">
+              {data.preferredRole
+                ? `Targeting ${data.preferredRole}${data.location ? ` · ${data.location}` : ''}`
+                : 'Your live career readiness and application signal.'}
+            </p>
           </div>
-          <p className="text-ink-muted">
-            {data.preferredRole
-              ? `Targeting ${data.preferredRole}${data.location ? ` · ${data.location}` : ''}`
-              : 'Your live career readiness and application signal.'}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setCopilotOpen(true)}
-            className="press-btn press-btn--primary !min-h-10 !px-4 !py-2 text-sm flex items-center gap-2"
-          >
-            <Bot size={16} />
-            Career Copilot
-          </button>
-          <Link to="/onboarding">
-            <PressButton variant="ghost">Edit profile</PressButton>
-          </Link>
-        </div>
-      </header>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setCopilotOpen(true)}
+              className="press-btn press-btn--primary !min-h-10 !px-4 !py-2 text-sm flex items-center gap-2"
+            >
+              <Bot size={16} />
+              Career Copilot
+            </button>
+            <Link to="/onboarding">
+              <PressButton variant="ghost">Edit profile</PressButton>
+            </Link>
+          </div>
+        </header>
+      </AnimatedSection>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="reveal reveal-delay-1">
-          <StatCard
-            icon={<Target size={22} />}
-            label="Career Readiness"
-            value={`${data.careerReadinessScore}`}
-          />
+      <AnimatedSection variant="stagger" delay={0.1}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <StatCard
+              icon={<Target size={22} />}
+              label="Career Readiness"
+              value={`${data.careerReadinessScore}`}
+            />
+          </div>
+          <div>
+            <StatCard
+              icon={<TrendingUp size={22} />}
+              label="Profile Strength"
+              value={`${data.profileCompletionPercent}%`}
+            />
+          </div>
+          <div>
+            <StatCard
+              icon={<FileText size={22} />}
+              label="Resume Score"
+              value={`${data.resumeScore}`}
+            />
+          </div>
+          <div>
+            <StatCard
+              icon={<Briefcase size={22} />}
+              label="Applications"
+              value={`${data.applicationCount}`}
+            />
+          </div>
         </div>
-        <div className="reveal reveal-delay-2">
-          <StatCard
-            icon={<TrendingUp size={22} />}
-            label="Profile Strength"
-            value={`${data.profileCompletionPercent}%`}
-          />
-        </div>
-        <div className="reveal reveal-delay-3">
-          <StatCard
-            icon={<FileText size={22} />}
-            label="Resume Score"
-            value={`${data.resumeScore}`}
-          />
-        </div>
-        <div className="reveal reveal-delay-4">
-          <StatCard
-            icon={<Briefcase size={22} />}
-            label="Applications"
-            value={`${data.applicationCount}`}
-          />
-        </div>
-      </div>
+      </AnimatedSection>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="ui-panel p-6 reveal space-y-4">
