@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Bot, Compass, Sparkles } from 'lucide-react';
 import PressButton from '../components/PressButton';
@@ -191,12 +192,36 @@ export default function JobDetailPage() {
         <p className="text-sm text-ink-muted">Experience: {job.requiredExperienceYears ?? 0}+ years</p>
       </section>
 
-      {error && <p className="text-sm text-danger">{error}</p>}
-      {success && <p className="text-sm text-success font-semibold">{success}</p>}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            className="text-sm text-danger font-medium p-3 rounded-xl bg-danger/10 border border-danger/20"
+            aria-live="polite"
+            role="alert"
+          >
+            {error}
+          </motion.p>
+        )}
+        {success && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6 }}
+            className="text-sm text-success font-semibold p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2"
+            aria-live="polite"
+          >
+            <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">✓</span>
+            <span>{success}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="flex flex-wrap items-center gap-4 pt-2">
-        <PressButton variant="primary" disabled={applying} onClick={() => void apply()}>
-          {applying ? 'Applying…' : 'Apply now'}
+        <PressButton variant="primary" loading={applying} onClick={() => void apply()}>
+          Apply now
         </PressButton>
         <Link
           to={`/career-roadmap?jobId=${job.id}`}
