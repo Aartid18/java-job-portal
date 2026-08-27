@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import PressButton from '../components/PressButton';
 import { ErrorBoundary } from '../components/ui';
 import MaskedHeading from '../components/reactbits/MaskedHeading';
@@ -290,7 +290,13 @@ export default function OnboardingPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 sm:py-10 space-y-6">
-      <header className="space-y-3">
+      {/* Profile Header Motion — Phase 5 Spec */}
+      <motion.header
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="space-y-3"
+      >
         <p className="text-label">Career profile setup</p>
         <ErrorBoundary fallback={<h1 className="text-3xl font-extrabold font-display text-ink">Let&apos;s build your career profile</h1>}>
           <MaskedHeading
@@ -313,11 +319,19 @@ export default function OnboardingPage() {
             setStep(i);
           }}
         />
-      </header>
+      </motion.header>
 
       <div className="ui-panel p-6 sm:p-8 space-y-5">
-        {step === 0 && (
-          <section className="space-y-4">
+        <AnimatePresence mode="wait">
+          {step === 0 && (
+            <motion.section
+              key="step-0"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-4"
+            >
             <h2 className="text-h2 text-ink">Basic information</h2>
             <p className="text-sm text-ink-muted">This section contributes ~20% to profile strength.</p>
             <Field label="Full name" value={fullName} onChange={setFullName} required />
@@ -342,8 +356,8 @@ export default function OnboardingPage() {
                 )
               }
             />
-          </section>
-        )}
+            </motion.section>
+          )}
 
         {step === 1 && (
           <section className="space-y-4">
@@ -920,6 +934,7 @@ export default function OnboardingPage() {
             )}
           </section>
         )}
+        </AnimatePresence>
 
         {error && step !== 7 && <ErrorText text={error} />}
       </div>
@@ -978,20 +993,23 @@ function StepRail({
   return (
     <div className="flex gap-2 overflow-x-auto pb-1">
       {steps.map((label, i) => (
-        <button
+        <motion.button
           key={label}
           type="button"
           onClick={() => onJump(i)}
-          className={`shrink-0 rounded-[12px] px-3 py-1.5 text-xs font-semibold border transition ${
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.15 }}
+          className={`shrink-0 rounded-[12px] px-3 py-1.5 text-xs font-semibold border transition cursor-pointer ${
             i === current
-              ? 'bg-brand text-surface border-brand'
+              ? 'bg-brand text-white border-brand shadow-xs'
               : i < current
                 ? 'bg-brand-muted text-brand border-transparent'
                 : 'bg-surface text-ink-faint border-line'
           }`}
         >
           {i + 1}. {label}
-        </button>
+        </motion.button>
       ))}
     </div>
   );
