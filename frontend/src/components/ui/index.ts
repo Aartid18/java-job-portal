@@ -25,6 +25,7 @@ export { LottieIcon } from './LottieIcon';
 export { PageTransition, AnimatedSection } from './PageTransition';
 export { SectionRevealContainer } from './SectionRevealContainer';
 export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as ExpandableProfileCard } from './ExpandableProfileCard';
 
 
 

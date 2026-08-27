@@ -15,7 +15,7 @@ import {
 import PressButton from '../components/PressButton';
 import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
-import { TiltCard, OrganicStatCard, SectionRevealContainer, ErrorBoundary } from '../components/ui';
+import { TiltCard, OrganicStatCard, SectionRevealContainer, ErrorBoundary, ExpandableProfileCard } from '../components/ui';
 import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
 import { gridExplodeContainer, gridExplodeItem } from '../lib/motion';
 
@@ -134,6 +134,47 @@ export default function Dashboard() {
             )}
           </motion.div>
         </div>
+
+        {/* Featured Enterprise Java Mentors & Engineers (Expandable Cards Showcase) */}
+        <SectionRevealContainer effect="slide-up" delayMs={75}>
+          <div className="space-y-4 pt-4 border-t border-line/40">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <span className="px-2.5 py-0.5 rounded-full bg-brand-muted/60 text-brand text-[11px] font-semibold uppercase tracking-wider">
+                  Featured JVM Mentors & Tech Leads
+                </span>
+                <h2 className="text-xl sm:text-2xl font-bold font-display text-ink mt-1">
+                  Connect with Enterprise Industry Leaders
+                </h2>
+              </div>
+              <p className="text-xs text-ink-muted">Click any profile card to expand details</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <ExpandableProfileCard
+                id="mentor-jane-doe"
+                imageSrc="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=1000"
+                title="Jane Doe"
+                subtitle="Senior Java Architect"
+                tag="Spring Boot 3 Lead"
+              />
+              <ExpandableProfileCard
+                id="mentor-alex-chen"
+                imageSrc="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1000"
+                title="Alex Chen"
+                subtitle="Microservices & Kafka Specialist"
+                tag="Cloud Native Lead"
+              />
+              <ExpandableProfileCard
+                id="mentor-priya-sharma"
+                imageSrc="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=1000"
+                title="Priya Sharma"
+                subtitle="JVM Performance & Systems Architect"
+                tag="Distributed Systems"
+              />
+            </div>
+          </div>
+        </SectionRevealContainer>
 
         {/* Live Organic Statistics Grid */}
         <SectionRevealContainer effect="zoom-in" delayMs={100}>
