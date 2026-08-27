@@ -68,15 +68,18 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center gap-4">
           <Link
             to="/"
-            className="flex items-center gap-3 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-4 rounded-[4px]"
+            className="flex items-center gap-3 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-4 rounded-[4px] group"
             onClick={close}
           >
-            <span
+            <motion.span
+              whileHover={{ rotate: 12, scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 20 }}
               className="w-9 h-9 rounded-[12px] text-white flex items-center justify-center shadow-[var(--shadow-1)]"
               style={{ background: 'var(--gradient-primary)' }}
             >
               <Briefcase size={18} />
-            </span>
+            </motion.span>
             <span className="font-display text-xl font-bold text-ink">Java Job Portal</span>
           </Link>
 
@@ -86,9 +89,16 @@ export default function Navbar() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`nav-link ${pathname === link.to ? 'is-active' : ''}`}
+                  className={`nav-link relative ${pathname === link.to ? 'is-active' : ''}`}
                 >
                   {link.label}
+                  {pathname === link.to && (
+                    <motion.div
+                      layoutId="activeNavIndicator"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand rounded-full"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </Link>
               ))}
 

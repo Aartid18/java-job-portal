@@ -15,7 +15,8 @@ import {
 import PressButton from '../components/PressButton';
 import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
-import { TiltCard, OrganicStatCard, CareerIllustration2D } from '../components/ui';
+import { TiltCard, OrganicStatCard } from '../components/ui';
+import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
 import { heroZoomIn, gridExplodeContainer, gridExplodeItem } from '../lib/motion';
 
 export default function Dashboard() {
@@ -79,7 +80,9 @@ export default function Dashboard() {
             <span>AI-Powered Java & Full-Stack Career Operating System</span>
           </motion.div>
 
-          <CareerIllustration2D type="hero" className="my-2" />
+          <div className="w-full my-4">
+            <Hero3DScene />
+          </div>
 
           <motion.h1
             variants={heroZoomIn}
