@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { useAppReducedMotion, fadeUp } from '../../lib/motion';
+import { useAppReducedMotion } from '../../lib/motion';
 import Button from './Button';
 
 export default function EmptyState({
@@ -20,27 +20,48 @@ export default function EmptyState({
 
   return (
     <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
       className="text-center py-12 px-4 space-y-4"
     >
       {icon && (
         <motion.div
-          initial={{ scale: 0.85, opacity: 0 }}
+          initial={shouldReduceMotion ? undefined : { scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="flex justify-center text-brand"
         >
           {icon}
         </motion.div>
       )}
-      <div className="space-y-2">
-        <h3 className="text-h3 text-ink">{title}</h3>
-        <p className="text-sm text-ink-muted max-w-md mx-auto">{description}</p>
+      <div className="space-y-1.5">
+        <motion.h3
+          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+          className="text-h3 text-ink"
+        >
+          {title}
+        </motion.h3>
+        <motion.p
+          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="text-sm text-ink-muted max-w-md mx-auto"
+        >
+          {description}
+        </motion.p>
       </div>
       {actionLabel && onAction && (
-        <motion.div whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+        <motion.div
+          initial={shouldReduceMotion ? undefined : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
+        >
           <Button variant="primary" onClick={onAction}>
             {actionLabel}
           </Button>
