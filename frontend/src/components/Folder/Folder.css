@@ -155,9 +155,12 @@
   z-index: 5;
 }
 
-.folder-paper:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.3);
+.milestone-folder.is-open .folder-paper:hover {
+  transform: translateY(-135px) scale(1.22) rotate(0deg) !important;
+  z-index: 50 !important;
+  box-shadow: 0 20px 40px rgba(79, 70, 229, 0.4), 0 0 25px rgba(79, 70, 229, 0.5);
+  border-color: #4F46E5;
+  cursor: pointer;
 }
 
 /* Celebratory Glow & Sparkle Pulse */
