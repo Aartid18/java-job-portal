@@ -38,34 +38,77 @@ export default function ApplicationsPage() {
     };
   }, []);
 
+  const [tab, setTab] = useState('ALL');
+
+  const filteredApps = apps.filter((a) => {
+    if (tab === 'ALL') return true;
+    if (tab === 'APPLIED') return a.status === 'APPLIED' || a.status === 'SHORTLISTED';
+    if (tab === 'INTERVIEW') return a.status === 'INTERVIEW' || a.status === 'ASSESSMENT' || a.status === 'OFFER';
+    if (tab === 'REJECTED') return a.status === 'REJECTED';
+    return true;
+  });
+
+  const TABS = [
+    { id: 'ALL', label: 'All Applications' },
+    { id: 'APPLIED', label: 'Applied & Shortlisted' },
+    { id: 'INTERVIEW', label: 'Interviews & Offers' },
+    { id: 'REJECTED', label: 'Archived' },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <AnimatedSection variant="fadeUp">
-        <header>
-          <p className="text-label">Pipeline</p>
-          <h1 className="text-h1 text-ink">My applications</h1>
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line/60 pb-4">
+          <div>
+            <p className="text-label">Pipeline</p>
+            <h1 className="text-h1 text-ink">My applications</h1>
+          </div>
+
+          {/* Micro Interaction Tab Filter Bar — Phase 8 */}
+          <div className="flex gap-1 overflow-x-auto pb-1 bg-surface-2/60 p-1.5 rounded-2xl border border-line/70">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTab(t.id)}
+                className={`relative px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
+                  tab === t.id ? 'text-brand' : 'text-ink-muted hover:text-ink'
+                }`}
+              >
+                {t.label}
+                {tab === t.id && (
+                  <motion.div
+                    layoutId="activeAppTab"
+                    className="absolute inset-0 bg-surface rounded-xl shadow-xs border border-line/60 -z-10"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
         </header>
       </AnimatedSection>
 
       {error && <p className="text-sm text-danger">{error}</p>}
       {loading ? (
         <Skeleton className="h-40" />
-      ) : apps.length === 0 ? (
+      ) : filteredApps.length === 0 ? (
         <EmptyState
-          title="No applications yet"
-          description="Browse open roles and apply with one click."
+          title="No applications in this view"
+          description="Browse open roles and apply to expand your candidate pipeline."
           actionLabel="Browse jobs"
           onAction={() => navigate('/candidate/jobs')}
         />
       ) : (
         <ul className="space-y-3">
-          {apps.map((a, idx) => (
+          {filteredApps.map((a, idx) => (
             <motion.li
               key={a.id}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -3, scale: 1.005 }}
               transition={{ duration: 0.3, delay: idx * 0.05 }}
-              className="ui-panel p-5 space-y-2"
+              className="ui-panel p-5 space-y-2 transition-shadow hover:shadow-md"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
