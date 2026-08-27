@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Roles — Careers Gallery | Java Job Portal</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* CSS Design System Tokens */
+    :root {
+      --bg-dark: #12131A;
+      --bg-card-surface: #1B1D27;
+      --text-main: #F4F2ED;
+      --text-muted: #94A3B8;
+      --text-faint: #64748B;
+      --border-line: rgba(244, 242, 237, 0.12);
+      
+      /* Department Accent Colors */
+      --color-engineering: #2DD4BF; /* Teal */
+      --color-design: #FB7185;      /* Coral */
+      --color-product: #818CF8;     /* Periwinkle */
+      --color-marketing: #FBBF24;   /* Amber */
+
+      --font-display: 'Fraunces', serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Container Section */
+    .careers-section {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3rem 1.5rem 2.5rem;
+      background: radial-gradient(circle at 50% 10%, rgba(45, 212, 191, 0.04) 0%, transparent 60%),
+                  radial-gradient(circle at 80% 80%, rgba(129, 140, 248, 0.03) 0%, transparent 50%),
+                  var(--bg-dark);
+    }
+
+    /* Header Block */
+    .header-block {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 1.5rem;
+      z-index: 10;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--color-engineering);
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      background: rgba(45, 212, 191, 0.08);
+      border: 1px solid rgba(45, 212, 191, 0.25);
+      border-radius: 9999px;
+    }
+
+    .main-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+    }
+
+    .main-heading em {
+      font-style: italic;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2DD4BF 0%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subhead {
+      font-size: clamp(0.95rem, 2vw, 1.125rem);
+      color: var(--text-muted);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* WebGL Circular Gallery Canvas Stage */
+    .gallery-stage {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      max-width: 1400px;
+      margin: 0 auto;
+      cursor: grab;
+      user-select: none;
+      touch-action: pan-y;
+    }
+
+    .gallery-stage:active {
+      cursor: grabbing;
+    }
+
+    .gallery-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Interactive Hint Overlay */
+    .interaction-hint {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-faint);
+      display: flex;
+      items-center: center;
+      gap: 0.4rem;
+      pointer-events: none;
+      background: rgba(27, 29, 39, 0.7);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-line);
+    }
+
+    /* Legend Row */
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.75rem;
+      margin-top: 1.5rem;
+      padding: 0.85rem 1.75rem;
+      background: rgba(27, 29, 39, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-line);
+      border-radius: 9999px;
+      z-index: 10;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .legend-dot.engineering { background-color: var(--color-engineering); color: var(--color-engineering); }
+    .legend-dot.design { background-color: var(--color-design); color: var(--color-design); }
+    .legend-dot.product { background-color: var(--color-product); color: var(--color-product); }
+    .legend-dot.marketing { background-color: var(--color-marketing); color: var(--color-marketing); }
+
+    /* Keyboard focus ring styling */
+    .gallery-stage:focus-visible {
+      outline: 2px solid var(--color-engineering);
+      outline-offset: 4px;
+      border-radius: 16px;
+    }
+
+    /* Responsive Mobile Tweaks */
+    @media (max-width: 768px) {
+      .careers-section {
+        padding: 2rem 1rem 1.5rem;
+      }
+
+      .gallery-stage {
+        height: 380px;
+      }
+
+      .legend-row {
+        gap: 1rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 16px;
+      }
+
+      .legend-item {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="careers-section">
+    <!-- Header Block -->
+    <header class="header-block">
+      <span class="eyebrow">Careers @ Java Job Portal</span>
+      <h1 class="main-heading">Open <em>Roles</em> Across Teams</h1>
+      <p class="subhead">Drag, scroll, or use arrow keys to explore our open engineering, design, product, and marketing positions.</p>
+    </header>
+
+    <!-- Gallery Stage Container -->
+    <div class="gallery-stage" id="gallery-container" tabindex="0" aria-label="Interactive circular roles gallery. Drag or use arrow keys to navigate positions.">
+      <div class="interaction-hint">
+        <span>Drag / Scroll to explore</span>
+        <span>→</span>
+      </div>
+      <canvas class="gallery-canvas" id="gallery-canvas"></canvas>
+    </div>
+
+    <!-- Department Legend Row -->
+    <footer class="legend-row">
+      <div class="legend-item">
+        <span class="legend-dot engineering"></span>
+        <span>Engineering</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot design"></span>
+        <span>Design</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot product"></span>
+        <span>Product</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot marketing"></span>
+        <span>Marketing</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ES Module Script importing OGL from jsDelivr CDN -->
+  <script type="module">
+    import { Renderer, Camera, Transform, Plane, Mesh, Program, Texture } from 'https://cdn.jsdelivr.net/npm/ogl/dist/ogl.mjs';
+
+    // 1. Department Palette Definitions
+    const DEPARTMENTS = {
+      Engineering: {
+        name: 'Engineering',
+        color: '#2DD4BF', // Teal
+        gradientStart: '#0F766E',
+        gradientEnd: '#2DD4BF',
+        initial: 'E'
+      },
+      Design: {
+        name: 'Design',
+        color: '#FB7185', // Coral
+        gradientStart: '#BE123C',
+        gradientEnd: '#FB7185',
+        initial: 'D'
+      },
+      Product: {
+        name: 'Product',
+        color: '#818CF8', // Periwinkle
+        gradientStart: '#4338CA',
+        gradientEnd: '#818CF8',
+        initial: 'P'
+      },
+      Marketing: {
+        name: 'Marketing',
+        color: '#FBBF24', // Amber
+        gradientStart: '#B45309',
+        gradientEnd: '#FBBF24',
+        initial: 'M'
+      }
+    };
+
+    // 2. 12 Open Job Roles Data
+    const JOB_ROLES = [
+      { title: 'Sr. Java Microservices Architect', dept: DEPARTMENTS.Engineering },
+      { title: 'Staff Frontend System Engineer', dept: DEPARTMENTS.Design },
+      { title: 'Principal AI Product Manager', dept: DEPARTMENTS.Product },
+      { title: 'Head of Developer Growth', dept: DEPARTMENTS.Marketing },
+      { title: 'Distributed Systems Lead', dept: DEPARTMENTS.Engineering },
+      { title: 'Lead UI/UX Interactive Designer', dept: DEPARTMENTS.Design },
+      { title: 'Director of Platform Strategy', dept: DEPARTMENTS.Product },
+      { title: 'Talent Acquisition Manager', dept: DEPARTMENTS.Marketing },
+      { title: 'Cloud Security & DevOps Architect', dept: DEPARTMENTS.Engineering },
+      { title: 'Growth Product Analytics Lead', dept: DEPARTMENTS.Product },
+      { title: 'Brand & Motion Visual Producer', dept: DEPARTMENTS.Design },
+      { title: 'Technical Content Strategist', dept: DEPARTMENTS.Marketing }
+    ];
+
+    // 3. SVG Card Generator (Encodes SVG with Two-Tone Gradient, Noise Texture, Initial Letter)
+    function generateCardSvgUri(job) {
+      const { title, dept } = job;
+      const svgWidth = 400;
+      const svgHeight = 560;
+
+      const svgString = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
+          <defs>
+            <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${dept.gradientStart}" />
+              <stop offset="100%" stop-color="${dept.gradientEnd}" />
+            </linearGradient>
+
+            <filter id="noiseFilter">
+              <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+              <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.12 0" />
+              <feComposite operator="in" in2="SourceGraphic" />
+            </filter>
+          </defs>
+
+          <!-- Base Card Background Gradient -->
+          <rect width="100%" height="100%" fill="url(#cardGrad)" rx="24" />
+
+          <!-- Noise Grain Overlay -->
+          <rect width="100%" height="100%" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.4" rx="24" />
+
+          <!-- Translucent Background Initial Letter in Corner -->
+          <text x="360" y="160" font-family="Fraunces, serif" font-size="210" font-weight="700" fill="#ffffff" opacity="0.14" text-anchor="end">
+            ${dept.initial}
+          </text>
+
+          <!-- Subtle Top Border Line -->
+          <rect x="24" y="24" width="352" height="1" fill="#ffffff" opacity="0.25" />
+
+          <!-- Department Badge -->
+          <rect x="32" y="44" width="120" height="28" rx="14" fill="#12131A" opacity="0.75" />
+          <text x="92" y="62" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="${dept.color}" text-anchor="middle" letter-spacing="1.5">
+            ${dept.name.toUpperCase()}
+          </text>
+
+          <!-- Bottom Card Content Dark Glass Banner -->
+          <rect x="20" y="380" width="360" height="160" rx="18" fill="#12131A" opacity="0.88" />
+
+          <!-- Job Title -->
+          <text x="40" y="425" font-family="Fraunces, serif" font-size="21" font-weight="700" fill="#F4F2ED">
+            ${escapeXml(title.length > 28 ? title.substring(0, 26) + '...' : title)}
+          </text>
+
+          <!-- Subtitle / Department -->
+          <text x="40" y="460" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#94A3B8">
+            Full-time • Remote / Hybrid
+          </text>
+
+          <!-- CTA Arrow Label -->
+          <text x="40" y="505" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="${dept.color}">
+            VIEW POSITION →
+          </text>
+        </svg>
+      `.trim();
+
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+    }
+
+    function escapeXml(str) {
+      return str.replace(/[<>&'"]/g, (c) => {
+        switch (c) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case '\'': return '&apos;';
+          case '"': return '&quot;';
+        }
+      });
+    }
+
+    // 4. CircularGallery WebGL Implementation via OGL
+    class CircularGallery {
+      constructor(container, options = {}) {
+        this.container = container;
+        this.canvas = container.querySelector('#gallery-canvas');
+        
+        this.bend = options.bend || 1.2;
+        this.scrollSpeed = options.scrollSpeed || 0.005;
+        this.scrollEase = options.scrollEase || 0.08;
+
+        this.scroll = { current: 0, target: 0, last: 0 };
+        this.isDragging = false;
+        this.startPos = 0;
+
+        this.initWebGL();
+        this.createCards();
+        this.bindEvents();
+        this.onResize();
+        this.update();
+      }
+
+      initWebGL() {
+        this.renderer = new Renderer({ canvas: this.canvas, alpha: true, antialias: true });
+        this.gl = this.renderer.gl;
+        this.gl.clearColor(0, 0, 0, 0);
+
+        this.camera = new Camera(this.gl, { fov: 45 });
+        this.camera.position.z = 7;
+
+        this.scene = new Transform();
+      }
+
+      createCards() {
+        const planeGeometry = new Plane(this.gl, { width: 1.8, height: 2.5, widthSegments: 20, heightSegments: 20 });
+
+        // WebGL Vertex & Fragment Shaders (Curved Bend Shader)
+        const vertexShader = /* glsl */ `
+          attribute vec3 position;
+          attribute vec2 uv;
+
+          uniform mat4 modelViewMatrix;
+          uniform mat4 projectionMatrix;
+          uniform float uBend;
+          uniform float uOffset;
+
+          varying vec2 vUv;
+
+          void main() {
+            vUv = uv;
+            vec3 pos = position;
+
+            // Curve vertices along a circular arc based on X position relative to center
+            float xDist = pos.x + uOffset;
+            pos.z -= pow(xDist, 2.0) * (uBend * 0.12);
+            pos.y -= pow(xDist, 2.0) * (uBend * 0.04);
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+          }
+        `;
+
+        const fragmentShader = /* glsl */ `
+          precision highp float;
+
+          uniform sampler2D tMap;
+          varying vec2 vUv;
+
+          void main() {
+            vec4 color = texture2D(tMap, vUv);
+            gl_FragColor = color;
+          }
+        `;
+
+        this.cards = JOB_ROLES.map((job, index) => {
+          const texture = new Texture(this.gl);
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            texture.image = img;
+          };
+          img.src = generateCardSvgUri(job);
+
+          const program = new Program(this.gl, {
+            vertex: vertexShader,
+            fragment: fragmentShader,
+            uniforms: {
+              tMap: { value: texture },
+              uBend: { value: this.bend },
+              uOffset: { value: 0 }
+            },
+            transparent: true
+          });
+
+          const mesh = new Mesh(this.gl, { geometry: planeGeometry, program });
+          mesh.setParent(this.scene);
+          mesh.index = index;
+
+          return { mesh, job };
+        });
+
+        this.totalCards = this.cards.length;
+        this.spacing = 2.2; // Distance between card meshes along X axis
+      }
+
+      bindEvents() {
+        // Drag Interaction
+        const onPointerDown = (e) => {
+          this.isDragging = true;
+          this.startPos = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        };
+
+        const onPointerMove = (e) => {
+          if (!this.isDragging) return;
+          const x = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+          const delta = (x - this.startPos) * 0.006;
+          this.scroll.target -= delta;
+          this.startPos = x;
+        };
+
+        const onPointerUp = () => {
+          this.isDragging = false;
+        };
+
+        this.container.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+
+        this.container.addEventListener('touchstart', onPointerDown, { passive: true });
+        window.addEventListener('touchmove', onPointerMove, { passive: true });
+        window.addEventListener('touchend', onPointerUp);
+
+        // Scroll Wheel Interaction
+        this.container.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          this.scroll.target += e.deltaY * this.scrollSpeed;
+        }, { passive: false });
+
+        // Keyboard Arrow Keys
+        this.container.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            this.scroll.target += 0.8;
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            this.scroll.target -= 0.8;
+          }
+        });
+
+        window.addEventListener('resize', () => this.onResize());
+      }
+
+      onResize() {
+        const width = this.container.clientWidth;
+        const height = this.container.clientHeight;
+
+        this.renderer.setSize(width, height);
+        this.camera.perspective({ aspect: width / height });
+
+        // Adjust camera Z on smaller mobile screens
+        if (width < 768) {
+          this.camera.position.z = 8.5;
+        } else {
+          this.camera.position.z = 7.0;
+        }
+      }
+
+      update() {
+        // Smooth lerp scrolling
+        this.scroll.current += (this.scroll.target - this.scroll.current) * this.scrollEase;
+
+        const totalWidth = this.totalCards * this.spacing;
+
+        this.cards.forEach((card, i) => {
+          // Wrap position around endlessly for infinite circular scroll
+          let x = (i * this.spacing - this.scroll.current) % totalWidth;
+          if (x < -totalWidth / 2) x += totalWidth;
+          if (x > totalWidth / 2) x -= totalWidth;
+
+          card.mesh.position.x = x;
+          card.mesh.program.uniforms.uOffset.value = x;
+
+          // Rotation & scale curve relative to center
+          const distFromCenter = Math.abs(x);
+          card.mesh.rotation.y = -x * 0.12;
+          
+          const scale = Math.max(0.75, 1 - distFromCenter * 0.08);
+          card.mesh.scale.set(scale, scale, scale);
+        });
+
+        this.renderer.render({ scene: this.scene, camera: this.camera });
+        requestAnimationFrame(() => this.update());
+      }
+    }
+
+    // 5. Initialize Circular Gallery once DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('gallery-container');
+      new CircularGallery(container, {
+        bend: 1.4,
+        scrollSpeed: 0.006,
+        scrollEase: 0.07
+      });
+    });
+  </script>
+</body>
+</html>

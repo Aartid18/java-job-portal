@@ -8,6 +8,7 @@ import { EmptyState, TiltCard, RibbonBadge, SectionRevealContainer, ErrorBoundar
 import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { useLivePoll } from '../hooks/useLivePoll';
 import { jobsApi, type Job } from '../lib/jobsApi';
+import { CircularGallerySection } from '../components/CircularGallerySection';
 
 const QUICK_FILTERS = ['All Roles', 'Java 21', 'Spring Boot 3', 'Microservices', 'Remote', 'Kafka'];
 
@@ -83,6 +84,11 @@ export default function JobBrowsePage() {
             Refresh Marketplace
           </PressButton>
         </header>
+      </ViewportReveal>
+
+      {/* WebGL Open Roles Circular Gallery Carousel — React Bits Integration */}
+      <ViewportReveal delay={0.1} yOffset={20}>
+        <CircularGallerySection bend={1.4} scrollSpeed={0.006} scrollEase={0.07} />
       </ViewportReveal>
 
       {/* Search & Filter Bar */}
