@@ -25,6 +25,7 @@ import {
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { AnimatedSection, ErrorBoundary } from '../components/ui';
 import MaskedHeading from '../components/reactbits/MaskedHeading';
+import { MilestoneFolderSection } from '../components/MilestoneFolderSection';
 import { getErrorMessage } from '../lib/api';
 
 export const CareerRoadmapPage: React.FC = () => {
@@ -227,6 +228,9 @@ export const CareerRoadmapPage: React.FC = () => {
         </div>
       </div>
     </AnimatedSection>
+
+      {/* 30-Day Milestone Achievement — React Bits Folder Integration */}
+      <MilestoneFolderSection profileCompletion={overallProgress} readinessScore={readiness} />
 
       {errorMsg && (
         <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-sm text-red-600 dark:text-red-300">

@@ -27,6 +27,7 @@ import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary, Candida
 import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { RecommendedJobsChromaSection } from '../components/RecommendedJobsChromaSection';
+import { MilestoneFolderSection } from '../components/MilestoneFolderSection';
 import { getErrorMessage } from '../lib/api';
 import { candidateApi, type CandidateDashboard } from '../lib/candidateApi';
 
@@ -405,6 +406,13 @@ export default function JobSeekerDashboard() {
 
       {/* Recommended Open Roles — React Bits ChromaGrid Integration */}
       <RecommendedJobsChromaSection />
+
+      {/* 30-Day Milestone Achievement — React Bits Folder Integration */}
+      <MilestoneFolderSection
+        applicationCount={data.applicationCount}
+        profileCompletion={data.profileCompletionPercent}
+        readinessScore={data.careerReadinessScore}
+      />
 
       {/* Charts Grid — Phase 4 Motion System */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

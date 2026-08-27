@@ -1,0 +1,239 @@
+.milestone-folder-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+.milestone-folder {
+  position: relative;
+  width: calc(180px * var(--folder-scale, 1.2));
+  height: calc(130px * var(--folder-scale, 1.2));
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: visible !important;
+}
+
+.milestone-folder:focus-visible {
+  ring: 2px solid var(--folder-color, #4F46E5);
+  ring-offset: 4px;
+  border-radius: 12px;
+}
+
+.milestone-folder:hover:not(.is-open) {
+  transform: translateY(-6px) scale(1.03);
+}
+
+.milestone-folder:hover:not(.is-open) .folder-flap {
+  transform: rotateX(-25deg);
+}
+
+.milestone-folder:hover:not(.is-open) .folder-paper {
+  transform: translateY(-8px);
+}
+
+/* Folder Back Body */
+.folder-back {
+  position: absolute;
+  inset: 0;
+  background: var(--folder-color, #4F46E5);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+/* Folder Tab */
+.folder-tab {
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  width: 60px;
+  height: 16px;
+  background: var(--folder-color-dark, #3730A3);
+  border-radius: 8px 8px 0 0;
+  z-index: 1;
+}
+
+/* Folder Flap Cover */
+.folder-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: var(--folder-color-dark, #3730A3);
+  border-radius: 16px 16px 4px 4px;
+  transform-origin: top;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 4;
+}
+
+.milestone-folder.is-open .folder-flap {
+  transform: rotateX(-170deg);
+  z-index: 1;
+}
+
+/* Folder Front Panel */
+.folder-front {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 75%;
+  background: linear-gradient(180deg, var(--folder-color, #4F46E5), var(--folder-color-dark, #3730A3));
+  border-radius: 6px 6px 16px 16px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+}
+
+/* Papers Container */
+.folder-papers {
+  position: absolute;
+  inset: 10px 14px;
+  z-index: 2;
+  overflow: visible !important;
+}
+
+.folder-paper {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem;
+  color: #0F172A;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: bottom center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.dark .folder-paper {
+  background: #1E202E;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #F8FAFC;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Closed Paper Stack Offsets */
+.folder-paper:nth-child(1) {
+  transform: translateY(0px) scale(0.95);
+}
+.folder-paper:nth-child(2) {
+  transform: translateY(3px) scale(0.97);
+}
+.folder-paper:nth-child(3) {
+  transform: translateY(6px) scale(1);
+}
+
+/* Open Paper Stack Fan Expansion */
+.milestone-folder.is-open .folder-paper:nth-child(1) {
+  transform: translateY(-90px) translateX(-65px) rotate(-12deg) scale(1.05);
+  z-index: 5;
+}
+
+.milestone-folder.is-open .folder-paper:nth-child(2) {
+  transform: translateY(-115px) translateX(0px) rotate(0deg) scale(1.08);
+  z-index: 6;
+}
+
+.milestone-folder.is-open .folder-paper:nth-child(3) {
+  transform: translateY(-90px) translateX(65px) rotate(12deg) scale(1.05);
+  z-index: 5;
+}
+
+.folder-paper:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.3);
+}
+
+/* Celebratory Glow & Sparkle Pulse */
+.celebration-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.35) 0%, rgba(124, 58, 237, 0.2) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.celebration-glow.active {
+  opacity: 1;
+  animation: sparklePulse 0.7s ease-out forwards;
+}
+
+@keyframes sparklePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Milestone paper inner styling */
+.milestone-paper-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 100%;
+  height: 100%;
+}
+
+.milestone-paper-content strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: inherit;
+  color: var(--paper-accent, #4F46E5);
+}
+
+.milestone-paper-content span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Reduced Motion Safety */
+@media (prefers-reduced-motion: reduce) {
+  .milestone-folder {
+    transition: none !important;
+  }
+  .folder-flap {
+    transition: none !important;
+  }
+  .folder-paper {
+    transition: none !important;
+  }
+  .celebration-glow {
+    animation: none !important;
+  }
+}
