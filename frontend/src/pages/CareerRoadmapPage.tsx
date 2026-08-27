@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Compass,
   CheckCircle2,
   Clock,
-  ExternalLink,
   Bot,
   RefreshCw,
-  BookOpen,
-  FolderGit2,
-  Calendar,
   Layers,
-  ChevronDown,
-  ChevronUp,
   Sparkles,
   Award,
 } from 'lucide-react';
 import {
   careerRoadmapApi,
   type RoadmapResponse,
-  type RoadmapWeek,
 } from '../lib/careerRoadmapApi';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { AnimatedSection, ErrorBoundary } from '../components/ui';
@@ -32,14 +24,12 @@ export const CareerRoadmapPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const selectedSkillParam = searchParams.get('skill');
   const jobIdParam = searchParams.get('jobId');
 
   const [roadmap, setRoadmap] = useState<RoadmapResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingSkill, setUpdatingSkill] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [expandedWeek, setExpandedWeek] = useState<number>(1);
   const [copilotOpen, setCopilotOpen] = useState(false);
 
   useEffect(() => {
@@ -59,16 +49,6 @@ export const CareerRoadmapPage: React.FC = () => {
         data = res.data;
       }
       setRoadmap(data);
-
-      // Auto-expand the week corresponding to selectedSkillParam if provided
-      if (selectedSkillParam && data.weeks) {
-        const matchingWeek = data.weeks.find((w) =>
-          w.skillFocus.toLowerCase().includes(selectedSkillParam.toLowerCase())
-        );
-        if (matchingWeek) {
-          setExpandedWeek(matchingWeek.weekNumber);
-        }
-      }
     } catch (err) {
       setErrorMsg(getErrorMessage(err, 'Failed to load personalized career roadmap.'));
     } finally {
@@ -335,163 +315,7 @@ export const CareerRoadmapPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 4-Week / 30-Day Timeline Breakdown */}
-      <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-indigo-600" />
-              <h2 className="text-xl font-bold">4-Week / 30-Day Milestone Journey</h2>
-            </div>
-            <p className="text-sm text-[var(--ink-muted)] mt-1">
-              Structured day-by-day practical syllabus to take you from foundational understanding to production capstone deployment.
-            </p>
-          </div>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900 self-start sm:self-auto">
-            Practical Project Focus
-          </span>
-        </div>
 
-        <div className="space-y-4">
-          {roadmap?.weeks?.map((week: RoadmapWeek) => {
-            const isExpanded = expandedWeek === week.weekNumber;
-            return (
-              <div
-                key={week.weekNumber}
-                className="border border-[var(--line)] rounded-2xl overflow-hidden bg-[var(--surface-2)] transition-all"
-              >
-                {/* Week Header Accordion Toggle */}
-                <button
-                  onClick={() => setExpandedWeek(isExpanded ? 0 : week.weekNumber)}
-                  className="w-full px-6 py-5 flex items-center justify-between gap-4 text-left hover:bg-[var(--surface)] transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-xs shrink-0">
-                      W{week.weekNumber}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3 className="font-bold text-base text-[var(--ink)]">
-                          Week {week.weekNumber}: {week.skillFocus}
-                        </h3>
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                            week.priority === 'HIGH'
-                              ? 'bg-red-500/10 text-red-600 border border-red-500/20'
-                              : 'bg-indigo-500/10 text-indigo-600 border border-indigo-500/20'
-                          }`}
-                        >
-                          {week.priority} Priority
-                        </span>
-                      </div>
-                      <p className="text-xs text-[var(--ink-muted)] mt-0.5">{week.weeklyGoal}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs text-[var(--ink-muted)] hidden sm:block">
-                      {week.days.length} Daily Milestones
-                    </span>
-                    {isExpanded ? (
-                      <ChevronUp className="w-5 h-5 text-[var(--ink-muted)]" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-[var(--ink-muted)]" />
-                    )}
-                  </div>
-                </button>
-
-                {/* Week Body with Framer Motion Height Transition */}
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-6 border-t border-[var(--line)] bg-[var(--surface)] space-y-6">
-                    {/* Days Checklist */}
-                    <div className="space-y-3">
-                      <h4 className="text-xs font-bold text-[var(--ink-muted)] uppercase tracking-wider">
-                        Daily Practical Syllabus
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {week.days.map((day) => (
-                          <div
-                            key={day.dayNumber}
-                            className="p-3.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex gap-3 text-xs leading-relaxed"
-                          >
-                            <div className="font-bold text-indigo-600 dark:text-indigo-400 shrink-0">
-                              D{day.dayNumber}
-                            </div>
-                            <div className="space-y-1">
-                              <div className="font-semibold text-[var(--ink)]">{day.title}</div>
-                              <p className="text-[var(--ink-muted)]">{day.task}</p>
-                              <div className="pt-1 text-[11px] text-indigo-600 dark:text-indigo-300 font-medium">
-                                💡 <em>Practice: {day.practicePrompt}</em>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Curated Official Resources & Project */}
-                    {week.learningResources && (
-                      <div className="p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/60 space-y-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <BookOpen className="w-4 h-4 text-indigo-600" />
-                            <h4 className="text-sm font-bold text-indigo-950 dark:text-indigo-200">
-                              Curated Official Learning Resources for {week.learningResources.skillName}
-                            </h4>
-                          </div>
-                          {week.learningResources.officialDocUrl && (
-                            <a
-                              href={week.learningResources.officialDocUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1 self-start sm:self-auto"
-                            >
-                              {week.learningResources.officialDocTitle} <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
-                          )}
-                        </div>
-
-                        {/* Free Guides */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[var(--ink)]">
-                          {week.learningResources.freeResources?.map((res, rIdx) => (
-                            <div key={rIdx} className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                              <span>{res}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Practical Project Card */}
-                        {week.learningResources.practicalProjectIdea && (
-                          <div className="pt-3 border-t border-indigo-200/60 dark:border-indigo-900/60 flex items-start gap-2.5 text-xs">
-                            <FolderGit2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-                            <div>
-                              <strong className="text-indigo-950 dark:text-indigo-200">Suggested Milestone Capstone:</strong>{' '}
-                              <span className="text-[var(--ink-muted)]">
-                                {week.learningResources.practicalProjectIdea}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
-        </div>
-      </div>
 
       {/* Practical Project Recommendations Showcase */}
       {roadmap?.projectRecommendations && roadmap.projectRecommendations.length > 0 && (
