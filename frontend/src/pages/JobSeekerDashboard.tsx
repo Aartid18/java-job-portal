@@ -296,8 +296,9 @@ export default function JobSeekerDashboard() {
         </motion.div>
       </motion.div>
 
+      {/* Main Content Panels — Phase 4 Motion System */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="ui-panel p-6 reveal space-y-4">
+        <ViewportReveal delay={0.12} yOffset={24} className="ui-panel p-6 space-y-4">
           <ProgressRing percent={data.careerReadinessScore} label="Career Readiness" />
           <p className="text-xs text-ink-faint text-center">{data.readinessNote}</p>
           <div className="space-y-2">
@@ -308,12 +309,13 @@ export default function JobSeekerDashboard() {
                   <span className="font-semibold text-ink">{val}</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
-                  <div
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${val}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     className="h-full rounded-full"
-                    style={{
-                      width: `${val}%`,
-                      background: 'var(--gradient-primary)',
-                    }}
+                    style={{ background: 'var(--gradient-primary)' }}
                   />
                 </div>
               </div>
@@ -329,6 +331,7 @@ export default function JobSeekerDashboard() {
               Open 30-Day Learning Roadmap
             </Link>
             <button
+              type="button"
               onClick={() => setCopilotOpen(true)}
               className="w-full text-center px-4 py-2 rounded-xl bg-surface-2 hover:bg-surface text-ink font-semibold text-xs border border-line transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
@@ -336,9 +339,9 @@ export default function JobSeekerDashboard() {
               Ask Copilot to Analyze Gaps
             </button>
           </div>
-        </div>
+        </ViewportReveal>
 
-        <div className="ui-panel p-6 lg:col-span-2 reveal reveal-delay-1 space-y-4">
+        <ViewportReveal delay={0.16} yOffset={24} className="ui-panel p-6 lg:col-span-2 space-y-4">
           <div className="flex items-center gap-2">
             <Sparkles className="text-brand" size={20} />
             <h2 className="text-h2 text-ink">Your next best action</h2>
@@ -346,11 +349,29 @@ export default function JobSeekerDashboard() {
           {data.nextActions.length === 0 ? (
             <p className="text-sm text-ink-muted">You&apos;re in good shape. Keep applying and refining.</p>
           ) : (
-            <div className="space-y-3">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: { opacity: 1 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.08 },
+                },
+              }}
+              className="space-y-3"
+            >
               {data.nextActions.map((action) => (
-                <div
+                <motion.div
                   key={action.title}
-                  className="rounded-[12px] border border-line bg-surface-2/50 p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between"
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+                  }}
+                  whileHover={{ y: -2, scale: 1.008 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  className="rounded-[12px] border border-line bg-surface-2/50 p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between shadow-xs transition-shadow hover:shadow-md"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -374,15 +395,16 @@ export default function JobSeekerDashboard() {
                       {action.ctaLabel}
                     </PressButton>
                   </Link>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </ViewportReveal>
       </div>
 
+      {/* Charts Grid — Phase 4 Motion System */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="ui-panel p-6 reveal space-y-4">
+        <ViewportReveal delay={0.14} yOffset={24} className="ui-panel p-6 space-y-4">
           <h2 className="text-h2 text-ink">Readiness breakdown</h2>
           {readinessChart.length === 0 ? (
             <EmptyState title="No readiness data" description="Complete onboarding to populate this chart." />
@@ -405,9 +427,9 @@ export default function JobSeekerDashboard() {
               </ResponsiveContainer>
             </div>
           )}
-        </div>
+        </ViewportReveal>
 
-        <div className="ui-panel p-6 reveal reveal-delay-1 space-y-4">
+        <ViewportReveal delay={0.18} yOffset={24} className="ui-panel p-6 space-y-4">
           <h2 className="text-h2 text-ink">Application funnel</h2>
           {statusChart.length === 0 ? (
             <EmptyState
@@ -443,11 +465,12 @@ export default function JobSeekerDashboard() {
             <span>Offers: <strong className="text-ink">{data.offerCount}</strong></span>
             <span>Open jobs: <strong className="text-ink">{data.openJobsCount}</strong></span>
           </div>
-        </div>
+        </ViewportReveal>
       </div>
 
+      {/* Skills & Timeline Grid — Phase 4 Motion System */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="ui-panel p-6 reveal space-y-4">
+        <ViewportReveal delay={0.2} yOffset={24} className="ui-panel p-6 space-y-4">
           <h2 className="text-h2 text-ink">Skills ({data.skillCount})</h2>
           {data.skills.length === 0 ? (
             <EmptyState
@@ -459,17 +482,34 @@ export default function JobSeekerDashboard() {
               }}
             />
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: { opacity: 1 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+              }}
+              className="flex flex-wrap gap-2"
+            >
               {data.skills.map((s) => (
-                <span key={s.name} className="ui-chip ui-chip--info">
+                <motion.span
+                  key={s.name}
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.9 },
+                    visible: { opacity: 1, scale: 1 },
+                  }}
+                  whileHover={{ scale: 1.06, y: -1 }}
+                  className="ui-chip ui-chip--info cursor-pointer transition-colors hover:bg-brand hover:text-white"
+                >
                   {s.name} · {s.level}
-                </span>
+                </motion.span>
               ))}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </ViewportReveal>
 
-        <div className="ui-panel p-6 reveal reveal-delay-1 space-y-5">
+        <ViewportReveal delay={0.22} yOffset={24} className="ui-panel p-6 space-y-5">
           <h2 className="text-h2 text-ink">Application journey</h2>
           {data.recentApplications.length === 0 ? (
             <div className="space-y-3 text-sm text-ink-muted">
@@ -485,11 +525,28 @@ export default function JobSeekerDashboard() {
               </div>
             </div>
           ) : (
-            <div className="relative space-y-5">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                hidden: { opacity: 1 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+              }}
+              className="relative space-y-5"
+            >
               <div className="absolute top-4 left-4 h-[calc(100%-1rem)] w-px bg-line" />
               {data.recentApplications.map((app) => (
-                <div key={app.id} className="timeline-item flex items-start gap-4 relative">
-                  <div className="timeline-dot w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center z-10">
+                <motion.div
+                  key={app.id}
+                  variants={{
+                    hidden: { opacity: 0, x: -12 },
+                    visible: { opacity: 1, x: 0, transition: { duration: 0.35 } },
+                  }}
+                  whileHover={{ x: 3 }}
+                  className="timeline-item flex items-start gap-4 relative"
+                >
+                  <div className="timeline-dot w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center z-10 shadow-xs">
                     <FileText size={14} />
                   </div>
                   <div className="space-y-1 pt-0.5">
@@ -500,11 +557,11 @@ export default function JobSeekerDashboard() {
                     </p>
                     {app.appliedAt && <p className="text-xs text-ink-faint">{app.appliedAt}</p>}
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </ViewportReveal>
       </div>
 
         <div className="flex flex-wrap gap-2 reveal">
