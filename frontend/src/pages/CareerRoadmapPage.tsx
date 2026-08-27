@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Compass,
   CheckCircle2,
@@ -395,9 +396,17 @@ export const CareerRoadmapPage: React.FC = () => {
                   </div>
                 </button>
 
-                {/* Week Body */}
-                {isExpanded && (
-                  <div className="p-6 border-t border-[var(--line)] bg-[var(--surface)] space-y-6">
+                {/* Week Body with Framer Motion Height Transition */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="p-6 border-t border-[var(--line)] bg-[var(--surface)] space-y-6">
                     {/* Days Checklist */}
                     <div className="space-y-3">
                       <h4 className="text-xs font-bold text-[var(--ink-muted)] uppercase tracking-wider">
@@ -471,10 +480,12 @@ export const CareerRoadmapPage: React.FC = () => {
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
         </div>
       </div>
 

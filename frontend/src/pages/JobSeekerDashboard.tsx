@@ -22,7 +22,7 @@ import {
 import PressButton from '../components/PressButton';
 import LiveActivityFeed from '../components/LiveActivityFeed';
 import LiveDot from '../components/LiveDot';
-import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary } from '../components/ui';
+import { EmptyState, Skeleton, StatCard, AnimatedSection, ErrorBoundary, CandidateProfileCard } from '../components/ui';
 import MaskedHeading from '../components/reactbits/MaskedHeading';
 import { CareerCopilotDrawer } from '../components/CareerCopilotDrawer';
 import { getErrorMessage } from '../lib/api';
@@ -150,7 +150,16 @@ export default function JobSeekerDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
-      <AnimatedSection variant="fadeUp" delay={0.05}>
+      {/* Candidate Start Experience — Authenticated Expandable Profile Card */}
+      <AnimatedSection variant="fadeUp" delay={0.02}>
+        <CandidateProfileCard
+          readinessScore={data.careerReadinessScore || 85}
+          roleTitle={data.preferredRole || 'Java Developer Candidate'}
+          skills={data.skills?.map((s) => s.name) || ['Java 21', 'Spring Boot 3', 'Microservices', 'Kafka']}
+        />
+      </AnimatedSection>
+
+      <AnimatedSection variant="fadeUp" delay={0.08}>
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div className="space-y-2">
             <p className="text-label">Career workspace</p>
