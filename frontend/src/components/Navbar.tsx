@@ -86,20 +86,25 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5">
             {isAuthenticated &&
               roleLinks.map((link) => (
-                <Link
+                <motion.div
                   key={link.to}
-                  to={link.to}
-                  className={`nav-link relative ${pathname === link.to ? 'is-active' : ''}`}
+                  whileHover={{ y: -1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 >
-                  {link.label}
-                  {pathname === link.to && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand rounded-full"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </Link>
+                  <Link
+                    to={link.to}
+                    className={`nav-link relative block py-1 ${pathname === link.to ? 'is-active' : ''}`}
+                  >
+                    {link.label}
+                    {pathname === link.to && (
+                      <motion.div
+                        layoutId="activeNavIndicator"
+                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand rounded-full"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                </motion.div>
               ))}
 
             <NotificationBell />
