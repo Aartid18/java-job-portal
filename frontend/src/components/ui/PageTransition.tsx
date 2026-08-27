@@ -17,22 +17,21 @@ export function PageTransition({ children, className = '' }: PageTransitionProps
   const pageVariants = {
     initial: shouldReduceMotion
       ? { opacity: 0 }
-      : { opacity: 0, y: 12, filter: 'blur(6px)' },
+      : { opacity: 0, y: 10 },
     animate: {
       opacity: 1,
       y: 0,
-      filter: 'blur(0px)',
       transition: {
-        duration: 0.35,
+        duration: 0.25,
         ease: EASE_CUSTOM,
-        staggerChildren: 0.08,
       },
     },
     exit: shouldReduceMotion
       ? { opacity: 0 }
       : {
           opacity: 0,
-          transition: { duration: 0.18, ease: EASE_CUSTOM },
+          y: -8,
+          transition: { duration: 0.15, ease: EASE_CUSTOM },
         },
   };
 
