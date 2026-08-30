@@ -6,7 +6,7 @@ import AuthOnlyRoute from './components/AuthOnlyRoute';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { CursorZoneProvider } from './context/CursorZoneContext';
-import { ReactiveCursor } from './components/ui';
+import SplashCursor from './components/effects/SplashCursor';
 import Dashboard from './pages/Dashboard';
 import JobSeekerDashboard from './pages/JobSeekerDashboard';
 import RecruiterDashboard from './pages/RecruiterDashboard';
@@ -29,7 +29,6 @@ import NotificationsPage from './pages/NotificationsPage';
 
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/ui';
-import GlowCursor from './components/reactbits/GlowCursor';
 import OpeningSplash from './components/reactbits/OpeningSplash';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 
@@ -171,28 +170,24 @@ function App() {
                 <OpeningSplash />
               </ErrorBoundary>
               <ErrorBoundary>
-                <GlowCursor
-                  color="#67E8F9"
-                  secondaryColor="#A78BFA"
-                  trailLength={40}
-                  trailWidth={8}
-                  trailTaper={0.8}
-                  followSpeed={0.16}
-                  glowIntensity={1.9}
-                  glowSpread={1.2}
-                  hotspot={0.65}
-                  brightness={1.25}
-                  opacity={1}
-                  pulseSpeed={1.1}
-                  noiseStrength={0.035}
-                  idleFade
-                  idleTimeout={700}
-                  fadeDuration={900}
-                  blendMode="screen"
-                  className="fixed inset-0 z-40 pointer-events-none"
+                <SplashCursor
+                  SIM_RESOLUTION={96}
+                  DYE_RESOLUTION={900}
+                  CAPTURE_RESOLUTION={512}
+                  DENSITY_DISSIPATION={3.8}
+                  VELOCITY_DISSIPATION={2.2}
+                  PRESSURE={0.1}
+                  PRESSURE_ITERATIONS={15}
+                  CURL={3}
+                  SPLAT_RADIUS={0.18}
+                  SPLAT_FORCE={4500}
+                  SHADING={true}
+                  COLOR_UPDATE_SPEED={10}
+                  RAINBOW_MODE={false}
+                  COLOR="#6366f1"
+                  TRANSPARENT={true}
                 />
               </ErrorBoundary>
-              <ReactiveCursor />
               <AtmosphereBackground />
               <Navbar />
               <AppRoutes />
