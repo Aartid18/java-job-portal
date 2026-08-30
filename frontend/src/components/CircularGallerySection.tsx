@@ -15,30 +15,30 @@ export interface DepartmentInfo {
 export const DEPARTMENTS: Record<string, DepartmentInfo> = {
   Engineering: {
     name: 'Engineering',
-    color: '#2DD4BF', // Teal
-    gradientStart: '#0F766E',
-    gradientEnd: '#2DD4BF',
+    color: '#8B5CF6', // Electric Violet
+    gradientStart: '#21134A',
+    gradientEnd: '#8B5CF6',
     initial: 'E',
   },
   Design: {
     name: 'Design',
-    color: '#FB7185', // Coral
-    gradientStart: '#BE123C',
-    gradientEnd: '#FB7185',
+    color: '#6366F1', // Indigo
+    gradientStart: '#191A4A',
+    gradientEnd: '#6366F1',
     initial: 'D',
   },
   Product: {
     name: 'Product',
-    color: '#818CF8', // Periwinkle
-    gradientStart: '#4338CA',
-    gradientEnd: '#818CF8',
+    color: '#06B6D4', // Cyan Accent
+    gradientStart: '#0B2940',
+    gradientEnd: '#06B6D4',
     initial: 'P',
   },
   Marketing: {
     name: 'Marketing',
-    color: '#FBBF24', // Amber
-    gradientStart: '#B45309',
-    gradientEnd: '#FBBF24',
+    color: '#7C3AED', // Deep Violet
+    gradientStart: '#171943',
+    gradientEnd: '#7C3AED',
     initial: 'M',
   },
 };
@@ -102,6 +102,7 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
       <defs>
         <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${dept.gradientStart}" />
+          <stop offset="50%" stop-color="#111633" />
           <stop offset="100%" stop-color="${dept.gradientEnd}" />
         </linearGradient>
 
@@ -117,32 +118,32 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
       </defs>
 
       <!-- Card Base Surface -->
-      <rect width="100%" height="100%" fill="#0B0C12" rx="96" />
+      <rect width="100%" height="100%" fill="#080D1D" rx="96" />
 
       <!-- Top Color Area (Header) -->
       <rect width="100%" height="640" fill="url(#cardGrad)" rx="96" />
 
       <!-- Grain Overlay on Color Area -->
-      <rect width="100%" height="640" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.25" rx="96" />
+      <rect width="100%" height="640" fill="#ffffff" filter="url(#noiseFilter)" opacity="0.18" rx="96" />
 
       <!-- Translucent Department Initial Letter in Color Area -->
-      <text x="1660" y="540" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="680" font-weight="900" fill="#ffffff" opacity="0.22" text-anchor="end">
+      <text x="1660" y="540" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="680" font-weight="900" fill="#7C3AED" opacity="0.25" text-anchor="end">
         ${dept.initial}
       </text>
 
       <!-- Top Accent Line -->
-      <rect x="100" y="88" width="1600" height="8" fill="#ffffff" opacity="0.5" />
+      <rect x="100" y="88" width="1600" height="8" fill="#6366F1" opacity="0.6" />
 
       <!-- Top Accent Header Text -->
-      <text x="120" y="190" font-family="monospace" font-size="44" font-weight="900" fill="#ffffff" opacity="0.95" letter-spacing="6">
+      <text x="120" y="190" font-family="monospace" font-size="44" font-weight="900" fill="#A5B4FC" opacity="0.95" letter-spacing="6">
         JAVA JOB PORTAL • FEATURED ROLE
       </text>
 
       <!-- Bottom Text Area (75% Height Solid Dark Content Surface) -->
-      <rect x="56" y="560" width="1688" height="1960" rx="88" fill="#0B0C12" opacity="1.0" stroke="${dept.color}" stroke-opacity="0.7" stroke-width="8" />
+      <rect x="56" y="560" width="1688" height="1960" rx="88" fill="#111633" opacity="1.0" stroke="${dept.color}" stroke-opacity="0.7" stroke-width="8" />
 
       <!-- Department Badge in Text Area -->
-      <rect x="120" y="660" width="600" height="136" rx="68" fill="#161824" stroke="${dept.color}" stroke-width="4" />
+      <rect x="120" y="660" width="600" height="136" rx="68" fill="#17143A" stroke="${dept.color}" stroke-width="4" />
       <text x="420" y="746" font-family="monospace" font-size="48" font-weight="900" fill="${dept.color}" text-anchor="middle" letter-spacing="6">
         ${dept.name.toUpperCase()}
       </text>
@@ -150,13 +151,13 @@ function generateCardSvgUri(title: string, dept: DepartmentInfo) {
       <!-- Job Title (HD Ultra-Large Sharp Text) -->
       ${
         line2
-          ? `<text x="120" y="960" font-family="system-ui, -apple-system, sans-serif" font-size="104" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>
-             <text x="120" y="1100" font-family="system-ui, -apple-system, sans-serif" font-size="104" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line2)}</text>`
-          : `<text x="120" y="1020" font-family="system-ui, -apple-system, sans-serif" font-size="112" font-weight="900" fill="#FFFFFF" filter="url(#textShadow)">${escapeXml(line1)}</text>`
+          ? `<text x="120" y="960" font-family="system-ui, -apple-system, sans-serif" font-size="104" font-weight="900" fill="#F8FAFC" filter="url(#textShadow)">${escapeXml(line1)}</text>
+             <text x="120" y="1100" font-family="system-ui, -apple-system, sans-serif" font-size="104" font-weight="900" fill="#F8FAFC" filter="url(#textShadow)">${escapeXml(line2)}</text>`
+          : `<text x="120" y="1020" font-family="system-ui, -apple-system, sans-serif" font-size="112" font-weight="900" fill="#F8FAFC" filter="url(#textShadow)">${escapeXml(line1)}</text>`
       }
 
       <!-- Metadata Lines -->
-      <text x="120" y="1280" font-family="system-ui, sans-serif" font-size="64" font-weight="800" fill="#F1F5F9">
+      <text x="120" y="1280" font-family="system-ui, sans-serif" font-size="64" font-weight="800" fill="#A5B4FC">
         Full-Time Position • Remote / Hybrid
       </text>
 
@@ -492,19 +493,19 @@ export function CircularGallerySection({
       {/* Legend Row */}
       <div className="flex flex-wrap justify-center items-center gap-6 pt-2 font-mono text-xs text-[#94A3B8]">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#2DD4BF] shadow-[0_0_8px_#2DD4BF]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6] shadow-[0_0_8px_#8B5CF6]" />
           <span>Engineering</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#FB7185] shadow-[0_0_8px_#FB7185]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#6366F1] shadow-[0_0_8px_#6366F1]" />
           <span>Design</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#818CF8] shadow-[0_0_8px_#818CF8]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#06B6D4] shadow-[0_0_8px_#06B6D4]" />
           <span>Product</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24] shadow-[0_0_8px_#FBBF24]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#7C3AED] shadow-[0_0_8px_#7C3AED]" />
           <span>Marketing</span>
         </div>
       </div>
