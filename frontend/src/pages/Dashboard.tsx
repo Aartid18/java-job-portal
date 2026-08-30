@@ -25,7 +25,13 @@ import {
 } from '../lib/motion';
 import { RecommendedJobsChromaSection } from '../components/RecommendedJobsChromaSection';
 
-function StaggeredLetterHeading({ text, delay }: { text: string; delay: number }) {
+function StaggeredLetterHeading({
+  text,
+  delay,
+}: {
+  text: string;
+  delay: number;
+}) {
   const words = text.split(' ');
 
   const containerVariants = {
@@ -33,20 +39,26 @@ function StaggeredLetterHeading({ text, delay }: { text: string; delay: number }
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.045,
         delayChildren: delay,
       },
     },
   };
 
   const letterVariants = {
-    hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
+    hidden: {
+      opacity: 0,
+      y: 35,
+      filter: 'blur(10px)',
+      scale: 0.92,
+    },
     visible: {
       opacity: 1,
       y: 0,
       filter: 'blur(0px)',
+      scale: 1,
       transition: {
-        duration: 0.55,
+        duration: 0.65,
         ease: 'easeOut' as const,
       },
     },
@@ -57,20 +69,89 @@ function StaggeredLetterHeading({ text, delay }: { text: string; delay: number }
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display tracking-tight leading-[1.1] text-slate-200 dark:text-slate-100 text-center drop-shadow-md my-3"
+      className="
+        text-center
+        my-3
+        leading-[0.9]
+        tracking-[-0.04em]
+        select-none
+      "
     >
-      {words.map((word, wordIdx) => (
-        <span key={wordIdx} className="inline-block whitespace-nowrap mr-[0.25em]">
-          {Array.from(word).map((char, charIdx) => (
-            <motion.span key={charIdx} variants={letterVariants} className="inline-block">
-              {char}
-            </motion.span>
-          ))}
-        </span>
-      ))}
+      {words.map((word, wordIdx) => {
+        const isAI = word === 'AI';
+        const isPowered = word === 'Powered';
+        const isJava = word === 'Java';
+        const isPortal = word === 'Portal';
+
+        return (
+          <span
+            key={wordIdx}
+            className={`
+              inline-block whitespace-nowrap mr-[0.22em]
+
+              ${isAI
+                ? 'text-5xl sm:text-7xl lg:text-8xl font-black'
+                : ''
+              }
+
+              ${isPowered
+                ? 'text-5xl sm:text-7xl lg:text-8xl font-black'
+                : ''
+              }
+
+              ${isJava
+                ? 'text-6xl sm:text-8xl lg:text-9xl font-black italic'
+                : ''
+              }
+
+              ${isPortal
+                ? 'text-5xl sm:text-7xl lg:text-8xl font-black'
+                : ''
+              }
+            `}
+          >
+            {Array.from(word).map((char, charIdx) => (
+              <motion.span
+                key={charIdx}
+                variants={letterVariants}
+                className="inline-block"
+                style={{
+                  fontFamily: isJava
+                    ? '"Playfair Display", Georgia, serif'
+                    : '"Inter", "Helvetica Neue", sans-serif',
+
+                  color: isJava ? '#7c3aed' : undefined,
+
+                  background:
+                    isAI || isPowered || isPortal
+                      ? 'linear-gradient(90deg, #7c3aed, #6366f1, #06b6d4)'
+                      : undefined,
+
+                  WebkitBackgroundClip:
+                    isAI || isPowered || isPortal
+                      ? 'text'
+                      : undefined,
+
+                  WebkitTextFillColor:
+                    isAI || isPowered || isPortal
+                      ? 'transparent'
+                      : undefined,
+
+                  textShadow: isJava
+                    ? '0 8px 35px rgba(124, 58, 237, 0.18)'
+                    : undefined,
+                }}
+              >
+                {char}
+              </motion.span>
+            ))}
+          </span>
+        );
+      })}
     </motion.h1>
   );
 }
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -274,27 +355,24 @@ export default function Dashboard() {
               <button
                 type="button"
                 onClick={() => setActiveTab('seeker')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'seeker' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${activeTab === 'seeker' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
+                  }`}
               >
                 Job Seeker
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('recruiter')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'recruiter' ? 'bg-violet-600 text-white shadow-xs' : 'text-ink-muted hover:text-ink'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${activeTab === 'recruiter' ? 'bg-violet-600 text-white shadow-xs' : 'text-ink-muted hover:text-ink'
+                  }`}
               >
                 Recruiter
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('admin')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'admin' ? 'bg-cyan-600 text-white shadow-xs' : 'text-ink-muted hover:text-ink'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${activeTab === 'admin' ? 'bg-cyan-600 text-white shadow-xs' : 'text-ink-muted hover:text-ink'
+                  }`}
               >
                 Admin Overview
               </button>

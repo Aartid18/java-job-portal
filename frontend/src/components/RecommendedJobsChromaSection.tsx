@@ -5,7 +5,7 @@ import ChromaGrid, { type ChromaGridItem } from './ChromaGrid';
 import { jobsApi, type Job } from '../lib/jobsApi';
 import { ViewportReveal, Skeleton, ErrorBoundary } from './ui';
 
-function generateJobHeaderSvg(initials: string, title: string, color: string): string {
+export function generateJobHeaderSvg(initials: string, title: string, color: string): string {
   const svgWidth = 600;
   const svgHeight = 320;
 
@@ -25,13 +25,15 @@ function generateJobHeaderSvg(initials: string, title: string, color: string): s
     <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}">
       <defs>
         <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#12131A" />
-          <stop offset="100%" stop-color="#1E202E" />
+          <stop offset="0%" stop-color="#17143A" />
+          <stop offset="45%" stop-color="#111633" />
+          <stop offset="100%" stop-color="#080D1D" />
         </linearGradient>
 
         <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="${color}" />
-          <stop offset="100%" stop-color="${color}88" />
+          <stop offset="0%" stop-color="#7C3AED" />
+          <stop offset="50%" stop-color="#6366F1" />
+          <stop offset="100%" stop-color="#06B6D4" />
         </linearGradient>
       </defs>
 
@@ -42,24 +44,24 @@ function generateJobHeaderSvg(initials: string, title: string, color: string): s
       <rect x="0" y="0" width="${svgWidth}" height="6" fill="url(#accentGrad)" />
 
       <!-- Watermark Company Initials -->
-      <text x="560" y="240" font-family="system-ui, sans-serif" font-size="180" font-weight="900" fill="${color}" opacity="0.08" text-anchor="end">
+      <text x="560" y="240" font-family="system-ui, sans-serif" font-size="180" font-weight="900" fill="#7C3AED" opacity="0.10" text-anchor="end">
         ${initials}
       </text>
 
       <!-- Category Pill Badge -->
       <rect x="24" y="32" width="160" height="36" rx="18" fill="${color}22" stroke="${color}66" stroke-width="1.5" />
-      <text x="104" y="55" font-family="monospace" font-size="13" font-weight="800" fill="${color}" text-anchor="middle" letter-spacing="1.5">
+      <text x="104" y="55" font-family="monospace" font-size="13" font-weight="800" fill="#A5B4FC" text-anchor="middle" letter-spacing="1.5">
         FEATURED ROLE
       </text>
 
       <!-- Job Title Snippet -->
-      <text x="24" y="130" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="800" fill="#FFFFFF">
+      <text x="24" y="130" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="800" fill="#F8FAFC">
         ${escapeXml(title.length > 28 ? title.substring(0, 26) + '...' : title)}
       </text>
 
       <!-- Subtitle Badge Tag -->
       <rect x="24" y="220" width="220" height="44" rx="12" fill="#000000" opacity="0.6" />
-      <text x="40" y="248" font-family="sans-serif" font-size="15" font-weight="700" fill="#CBD5E1">
+      <text x="40" y="248" font-family="sans-serif" font-size="15" font-weight="700" fill="#94A3B8">
         ✓ Verified Enterprise Job
       </text>
     </svg>
@@ -69,23 +71,39 @@ function generateJobHeaderSvg(initials: string, title: string, color: string): s
 }
 
 function mapJobToChromaItem(job: Job): ChromaGridItem {
-  let borderColor = '#3B82F6';
-  let gradient = 'linear-gradient(145deg, #181C28, #0E111A)';
+  let borderColor = '#6366F1';
+  let gradient = 'linear-gradient(145deg, #17143A 0%, #0D1228 55%, #080D1D 100%)';
 
   const titleLower = job.title.toLowerCase();
 
-  if (titleLower.includes('architect') || titleLower.includes('lead') || titleLower.includes('principal')) {
-    borderColor = '#F59E0B'; // Amber
-    gradient = 'linear-gradient(145deg, #241A0E, #0E111A)';
-  } else if (titleLower.includes('full stack') || titleLower.includes('react') || titleLower.includes('frontend')) {
-    borderColor = '#8B5CF6'; // Violet
-    gradient = 'linear-gradient(145deg, #201533, #0E111A)';
-  } else if (titleLower.includes('microservices') || titleLower.includes('cloud') || titleLower.includes('devops')) {
-    borderColor = '#06B6D4'; // Cyan
-    gradient = 'linear-gradient(145deg, #0F2530, #0E111A)';
-  } else if (titleLower.includes('security') || titleLower.includes('staff') || titleLower.includes('systems')) {
-    borderColor = '#10B981'; // Emerald
-    gradient = 'linear-gradient(145deg, #0B251B, #0E111A)';
+  if (
+    titleLower.includes('architect') ||
+    titleLower.includes('lead') ||
+    titleLower.includes('principal')
+  ) {
+    borderColor = '#8B5CF6';
+    gradient = 'linear-gradient(145deg, #21134A 0%, #12122E 55%, #080D1D 100%)';
+  } else if (
+    titleLower.includes('full stack') ||
+    titleLower.includes('react') ||
+    titleLower.includes('frontend')
+  ) {
+    borderColor = '#6366F1';
+    gradient = 'linear-gradient(145deg, #191A4A 0%, #101535 55%, #080D1D 100%)';
+  } else if (
+    titleLower.includes('microservices') ||
+    titleLower.includes('cloud') ||
+    titleLower.includes('devops')
+  ) {
+    borderColor = '#06B6D4';
+    gradient = 'linear-gradient(145deg, #0B2940 0%, #101735 55%, #080D1D 100%)';
+  } else if (
+    titleLower.includes('security') ||
+    titleLower.includes('staff') ||
+    titleLower.includes('systems')
+  ) {
+    borderColor = '#4F46E5';
+    gradient = 'linear-gradient(145deg, #171943 0%, #10132E 55%, #080D1D 100%)';
   }
 
   const companyInitials = (job.companyName || 'Java Enterprise')
@@ -95,7 +113,11 @@ function mapJobToChromaItem(job: Job): ChromaGridItem {
     .substring(0, 3)
     .toUpperCase();
 
-  const image = generateJobHeaderSvg(companyInitials, job.title, borderColor);
+  const image = generateJobHeaderSvg(
+    companyInitials,
+    job.title,
+    borderColor
+  );
 
   return {
     id: job.id,
