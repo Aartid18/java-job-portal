@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useAppReducedMotion } from '../../lib/motion';
 
 import { Ballpit } from '../reactbits/Ballpit';
+import { CareerModel3D } from '../reactbits/CareerModel3D';
 import { ErrorBoundary } from '../ui';
 
 export function Hero3DScene() {
@@ -66,33 +67,13 @@ export function Hero3DScene() {
           <span className="text-brand font-semibold">Spring Boot 3.3</span>
         </div>
 
-        {/* Central Stylized Java Coffee Machine & Globe SVG */}
-        <div className="relative my-auto flex flex-col items-center justify-center">
-          <motion.div
-            className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-gradient-to-br from-amber-600 to-amber-900 text-white flex items-center justify-center shadow-xl shadow-amber-900/30"
-            animate={
-              shouldReduceMotion
-                ? undefined
-                : {
-                    y: [0, -8, 0],
-                  }
-            }
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="w-16 h-16 md:w-20 md:20 text-amber-200"
-            >
-              <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-              <line x1="6" y1="1" x2="6" y2="4" strokeDasharray="2 2" className="animate-bounce" />
-              <line x1="10" y1="1" x2="10" y2="4" strokeDasharray="2 2" className="animate-bounce delay-150" />
-              <line x1="14" y1="1" x2="14" y2="4" strokeDasharray="2 2" className="animate-bounce delay-300" />
-            </svg>
-          </motion.div>
+        {/* Real WebGL 3D Model: rotating briefcase orbited by matched-skill nodes */}
+        <div className="relative my-auto flex flex-col items-center justify-center w-full">
+          <div className="w-48 h-48 md:w-56 md:h-56">
+            <ErrorBoundary>
+              <CareerModel3D reduceMotion={!!shouldReduceMotion} />
+            </ErrorBoundary>
+          </div>
 
           {/* Floating Badge Chips around the model */}
           <motion.div
