@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useAppReducedMotion } from '../../lib/motion';
-
-import { Ballpit } from '../reactbits/Ballpit';
-import { CareerModel3D } from '../reactbits/CareerModel3D';
-import { ErrorBoundary } from '../ui';
-
+import { Coffee } from 'lucide-react';
+import { useAppReducedMotion, heroSceneScaleEntrance, heroFadeUp } from '../../lib/motion';
 export function Hero3DScene() {
   const shouldReduceMotion = useAppReducedMotion();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -23,24 +19,13 @@ export function Hero3DScene() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [shouldReduceMotion]);
 
+  const entranceVariant = shouldReduceMotion ? heroFadeUp : heroSceneScaleEntrance;
+
   return (
-    <div className="relative w-full max-w-xl mx-auto min-h-[380px] sm:min-h-[420px] flex items-center justify-center p-4 overflow-hidden rounded-3xl border border-line/60 bg-surface-2/30 backdrop-blur-xl shadow-2xl">
-      {/* Low-Density Interactive Ballpit Background (60 Particles) */}
-      <div className="absolute inset-0 z-0 opacity-65 pointer-events-auto">
-        <ErrorBoundary>
-          <Ballpit
-            count={60}
-            gravity={0.5}
-            friction={0.99}
-            wallBounce={0.95}
-            followCursor={true}
-            colors={[0x4f46e5, 0x7c3aed, 0x06b6d4, 0xd97706]}
-            minSize={0.6}
-            maxSize={1.1}
-            lightIntensity={200}
-          />
-        </ErrorBoundary>
-      </div>
+    <motion.div
+      variants={entranceVariant}
+      className="relative w-full max-w-xl mx-auto min-h-[380px] sm:min-h-[420px] flex items-center justify-center p-4 overflow-hidden rounded-3xl border border-line/60 bg-surface-2/30 backdrop-blur-xl shadow-2xl"
+    >
 
       {/* 3D Interactive Isometric Card & Coffee Machine Illustration Platform */}
       <motion.div
@@ -67,17 +52,25 @@ export function Hero3DScene() {
           <span className="text-brand font-semibold">Spring Boot 3.3</span>
         </div>
 
-        {/* Real WebGL 3D Model: rotating briefcase orbited by matched-skill nodes */}
-        <div className="relative my-auto flex flex-col items-center justify-center w-full">
-          <div className="w-48 h-48 md:w-56 md:h-56">
-            <ErrorBoundary>
-              <CareerModel3D reduceMotion={!!shouldReduceMotion} />
-            </ErrorBoundary>
-          </div>
+        {/* Center Element: Gentle floating Coffee Cup / Java Icon */}
+        <div className="relative my-auto flex flex-col items-center justify-center w-full py-6">
+          <motion.div
+            className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-800 shadow-2xl flex items-center justify-center border border-amber-300/30"
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    y: [0, -8, 0],
+                  }
+            }
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Coffee className="w-14 h-14 sm:w-16 sm:h-16 text-amber-100 drop-shadow-md stroke-[1.5]" />
+          </motion.div>
 
           {/* Floating Badge Chips around the model */}
           <motion.div
-            className="absolute -top-4 -left-8 bg-surface border border-line rounded-xl px-3 py-1.5 shadow-lg text-xs font-semibold text-ink flex items-center gap-2"
+            className="absolute top-2 -left-4 sm:-left-8 bg-surface border border-line rounded-xl px-3 py-1.5 shadow-lg text-xs font-semibold text-ink flex items-center gap-2"
             animate={
               shouldReduceMotion
                 ? undefined
@@ -92,7 +85,7 @@ export function Hero3DScene() {
           </motion.div>
 
           <motion.div
-            className="absolute -bottom-2 -right-8 bg-surface border border-line rounded-xl px-3 py-1.5 shadow-lg text-xs font-semibold text-ink flex items-center gap-2"
+            className="absolute bottom-2 -right-4 sm:-right-8 bg-surface border border-line rounded-xl px-3 py-1.5 shadow-lg text-xs font-semibold text-ink flex items-center gap-2"
             animate={
               shouldReduceMotion
                 ? undefined
@@ -123,7 +116,7 @@ export function Hero3DScene() {
           </div>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 

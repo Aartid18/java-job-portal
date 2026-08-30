@@ -15,16 +15,67 @@ import {
 import PressButton from '../components/PressButton';
 import LiveMarketStrip from '../components/LiveMarketStrip';
 import { useAuth } from '../context/AuthContext';
-import { TiltCard, OrganicStatCard, SectionRevealContainer, ErrorBoundary, ExpandableProfileCard, ViewportReveal } from '../components/ui';
-import { Hero3DScene } from '../components/backgrounds/Hero3DScene';
-import { gridExplodeContainer, gridExplodeItem } from '../lib/motion';
-
-import MaskedHeading from '../components/reactbits/MaskedHeading';
+import { TiltCard, OrganicStatCard, SectionRevealContainer, ExpandableProfileCard, ViewportReveal } from '../components/ui';
+import {
+  gridExplodeContainer,
+  gridExplodeItem,
+  heroSequenceContainer,
+  heroFadeUp,
+  useAppReducedMotion,
+} from '../lib/motion';
 import { RecommendedJobsChromaSection } from '../components/RecommendedJobsChromaSection';
+
+function StaggeredLetterHeading({ text, delay }: { text: string; delay: number }) {
+  const words = text.split(' ');
+
+  const containerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: delay,
+      },
+    },
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: {
+        duration: 0.55,
+        ease: 'easeOut' as const,
+      },
+    },
+  };
+
+  return (
+    <motion.h1
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display tracking-tight leading-[1.1] text-slate-200 dark:text-slate-100 text-center drop-shadow-md my-3"
+    >
+      {words.map((word, wordIdx) => (
+        <span key={wordIdx} className="inline-block whitespace-nowrap mr-[0.25em]">
+          {Array.from(word).map((char, charIdx) => (
+            <motion.span key={charIdx} variants={letterVariants} className="inline-block">
+              {char}
+            </motion.span>
+          ))}
+        </span>
+      ))}
+    </motion.h1>
+  );
+}
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const shouldReduceMotion = useAppReducedMotion();
   const [activeTab, setActiveTab] = useState<'seeker' | 'recruiter' | 'admin'>('seeker');
 
   const primaryCta = () => {
@@ -68,60 +119,47 @@ export default function Dashboard() {
     },
   ];
 
+  const heroContainerVariant = shouldReduceMotion ? heroFadeUp : heroSequenceContainer;
+
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex flex-col justify-between px-4 sm:px-6 lg:px-8 py-8 sm:py-12 overflow-hidden">
       <div className="max-w-6xl mx-auto w-full space-y-16">
-        {/* Hero Banner */}
-        <div data-cursor-zone="hero" className="text-center space-y-6 max-w-4xl mx-auto pt-6 flex flex-col items-center">
+        {/* Coordinated Hero Entrance Sequence */}
+        <motion.div
+          variants={heroContainerVariant}
+          initial="hidden"
+          animate="visible"
+          data-cursor-zone="hero"
+          className="text-center space-y-6 max-w-4xl mx-auto pt-6 flex flex-col items-center"
+        >
+          {/* Step 1: Badge Pill */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            variants={heroFadeUp}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-muted/70 text-brand text-xs font-semibold uppercase tracking-widest border border-brand/20 backdrop-blur-md"
           >
             <Zap className="w-3.5 h-3.5 text-brand" />
             <span>AI-Powered Java & Full-Stack Career Operating System</span>
           </motion.div>
 
-          <div className="w-full my-4">
-            <Hero3DScene />
+          {/* Step 2: Main Hero Heading - AI Powered Java Portal (Letter-by-Letter Staggered Fade-In) */}
+          <div className="w-full my-3">
+            <StaggeredLetterHeading
+              text="AI Powered Java Portal"
+              delay={(typeof window !== 'undefined' && sessionStorage.getItem('hasSeenPortalIntro')) ? 0.3 : 2.2}
+            />
           </div>
 
-          <ErrorBoundary
-            fallback={
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display text-display-gradient tracking-tight leading-[1.1] my-2">
-                Empowering Tech Careers & Modern Hiring
-              </h1>
-            }
-          >
-            <MaskedHeading
-              text="Empowering Tech Careers & Modern Hiring"
-              tag="h1"
-              mediaType="image"
-              fillScale={1.3}
-              parallax={34}
-              reveal="rise"
-              trigger="view"
-              duration={1.2}
-              align="center"
-              textScale={0.09}
-              className="my-2"
-            />
-          </ErrorBoundary>
-
+          {/* Step 4: Subtext Description */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={heroFadeUp}
             className="text-lg sm:text-xl text-ink-muted max-w-2xl mx-auto leading-relaxed font-body"
           >
             Complete end-to-end platform for job seekers and recruiters — Jaccard skill matching, ATS resume scoring, career roadmap analysis, and interview scheduling.
           </motion.p>
 
+          {/* Step 5: Primary CTA Action Buttons */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            variants={heroFadeUp}
             className="flex flex-wrap items-center justify-center gap-4 pt-2"
           >
             <PressButton variant="primary" onClick={primaryCta} className="!px-8 !py-3.5 text-base font-semibold shadow-lg shadow-brand/25">
@@ -134,7 +172,7 @@ export default function Dashboard() {
               </PressButton>
             )}
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Featured Enterprise Java Mentors & Engineers (Expandable Cards Showcase) */}
         <SectionRevealContainer effect="slide-up" delayMs={75}>
@@ -154,21 +192,21 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <ExpandableProfileCard
                 id="mentor-jane-doe"
-                imageSrc="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=1000"
+                imageSrc="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80"
                 title="Jane Doe"
                 subtitle="Senior Java Architect"
                 tag="Spring Boot 3 Lead"
               />
               <ExpandableProfileCard
                 id="mentor-alex-chen"
-                imageSrc="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=1000"
+                imageSrc="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
                 title="Alex Chen"
                 subtitle="Microservices & Kafka Specialist"
                 tag="Cloud Native Lead"
               />
               <ExpandableProfileCard
                 id="mentor-priya-sharma"
-                imageSrc="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=1000"
+                imageSrc="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80"
                 title="Priya Sharma"
                 subtitle="JVM Performance & Systems Architect"
                 tag="Distributed Systems"

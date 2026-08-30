@@ -29,6 +29,9 @@ import NotificationsPage from './pages/NotificationsPage';
 
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/ui';
+import GlowCursor from './components/reactbits/GlowCursor';
+import OpeningSplash from './components/reactbits/OpeningSplash';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 
 function AppRoutes() {
   const location = useLocation();
@@ -156,10 +159,6 @@ function AppRoutes() {
     </main>
   );
 }
-
-import GlowCursor from './components/reactbits/GlowCursor';
-import OpeningSplash from './components/reactbits/OpeningSplash';
-import ErrorBoundary from './components/ui/ErrorBoundary';
 
 function App() {
   return (

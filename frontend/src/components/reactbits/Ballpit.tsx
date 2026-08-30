@@ -774,9 +774,10 @@ export interface BallpitProps {
   [key: string]: any;
 }
 
-function isWebGLAvailable(canvas: HTMLCanvasElement): boolean {
+function isWebGLAvailable(): boolean {
   try {
-    return !!(window.WebGLRenderingContext && (canvas.getContext('webgl2') || canvas.getContext('webgl')));
+    const test = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (test.getContext('webgl2') || test.getContext('webgl')));
   } catch (e) {
     return false;
   }
@@ -789,7 +790,7 @@ export function Ballpit({ className = '', followCursor = true, ...props }: Ballp
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !isWebGLAvailable(canvas)) return;
+    if (!canvas || !isWebGLAvailable()) return;
 
     try {
       spheresInstanceRef.current = createBallpit(canvas, { followCursor, ...props });

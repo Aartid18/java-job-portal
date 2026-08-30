@@ -120,6 +120,37 @@ export const heroZoomIn = {
   },
 };
 
+/** Coordinated Hero Entrance Timeline Variants */
+export const heroSequenceContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+export const heroSceneScaleEntrance = {
+  hidden: { opacity: 0, scale: 0.92, filter: 'blur(6px)' },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: { duration: 0.45, ease: EASE_CUSTOM },
+  },
+};
+
+export const heroFadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38, ease: EASE_CUSTOM },
+  },
+};
+
 export const heroZoomOutSettle = {
   hidden: { opacity: 0, scale: 1.08 },
   visible: {

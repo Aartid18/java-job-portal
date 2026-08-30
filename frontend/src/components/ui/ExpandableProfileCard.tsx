@@ -42,7 +42,7 @@ export default function ExpandableProfileCard({
           layoutId={`image-${layoutId}`} 
           src={imageSrc} 
           alt={title}
-          className="absolute inset-0 h-full w-full object-cover" 
+          className="absolute inset-0 h-full w-full object-cover object-top" 
           variants={{
             hover: { scale: 1.06 }
           }}
@@ -97,7 +97,7 @@ export default function ExpandableProfileCard({
                   layoutId={`image-${layoutId}`} 
                   src={imageSrc} 
                   alt={title}
-                  className="h-full w-full object-cover" 
+                  className="h-full w-full object-cover object-top" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent md:hidden" />
               </div>
