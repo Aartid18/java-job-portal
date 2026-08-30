@@ -4,30 +4,45 @@ import { useCursorZone } from '../../context/CursorZoneContext';
 import { useAppReducedMotion } from '../../lib/motion';
 
 const ZONE_COLORS = {
-  hero: 'rgba(99, 102, 241, 0.12)',      // Soft Indigo
-  jobs: 'rgba(6, 182, 212, 0.12)',        // Soft Cyan
-  dashboard: 'rgba(124, 58, 237, 0.12)',   // Soft Violet
-  forms: 'rgba(16, 185, 129, 0.10)',      // Soft Emerald
-  default: 'rgba(79, 70, 229, 0.09)',
+  hero: 'rgba(99, 102, 241, 0.18)',
+  jobs: 'rgba(6, 182, 212, 0.18)',
+  dashboard: 'rgba(124, 58, 237, 0.18)',
+  forms: 'rgba(16, 185, 129, 0.16)',
+  default: 'rgba(79, 70, 229, 0.14)',
 };
 
-/**
- * Phase 17 — Subtle Pointer Atmosphere
- * Provides a lightweight, pointer-following ambient background glow on desktop
- * without hiding or modifying the native OS browser cursor.
- */
 export function ReactiveCursor() {
   const { activeZone } = useCursorZone();
   const shouldReduceMotion = useAppReducedMotion();
-  const [enabled, setEnabled] = useState(false);
 
-  const springConfig = { damping: 30, stiffness: 200, mass: 0.8 };
-  const glowX = useSpring(-200, springConfig);
-  const glowY = useSpring(-200, springConfig);
+  const [enabled, setEnabled] = useState(false);
+  const [hovering, setHovering] = useState(false);
+
+  const mouseX = useSpring(-100, {
+    damping: 25,
+    stiffness: 300,
+  });
+
+  const mouseY = useSpring(-100, {
+    damping: 25,
+    stiffness: 300,
+  });
+
+  const ringX = useSpring(-100, {
+    damping: 35,
+    stiffness: 180,
+  });
+
+  const ringY = useSpring(-100, {
+    damping: 35,
+    stiffness: 180,
+  });
 
   useEffect(() => {
-    // Disable on touch devices or under reduced-motion preference
-    const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+    const isTouch =
+      window.matchMedia('(pointer: coarse)').matches ||
+      window.innerWidth < 768;
+
     if (isTouch || shouldReduceMotion) {
       setEnabled(false);
       return;
@@ -35,33 +50,116 @@ export function ReactiveCursor() {
 
     setEnabled(true);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      glowX.set(e.clientX);
-      glowY.set(e.clientY);
+    const handleMouseMove = (event: MouseEvent) => {
+      mouseX.set(event.clientX);
+      mouseY.set(event.clientY);
+
+      ringX.set(event.clientX);
+      ringY.set(event.clientY);
     };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    const handleMouseOver = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+
+      if (
+        target.closest('button') ||
+        target.closest('a') ||
+        target.closest('[role="button"]')
+      ) {
+        setHovering(true);
+      } else {
+        setHovering(false);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, {
+      passive: true,
+    });
+
+    window.addEventListener('mouseover', handleMouseOver);
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, [glowX, glowY, shouldReduceMotion]);
+  }, [
+    mouseX,
+    mouseY,
+    ringX,
+    ringY,
+    shouldReduceMotion,
+  ]);
 
-  if (!enabled) return null;
+  if (!enabled) {
+    return null;
+  }
 
-  const glowColor = ZONE_COLORS[activeZone] || ZONE_COLORS.default;
+  const glowColor =
+    ZONE_COLORS[activeZone as keyof typeof ZONE_COLORS] ||
+    ZONE_COLORS.default;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      {/* Background Soft Pointer Radial Atmosphere */}
+    <div
+      className="fixed inset-0 pointer-events-none overflow-hidden z-[9999]"
+      aria-hidden="true"
+    >
+      {/* Ambient glow */}
       <motion.div
         style={{
-          x: glowX,
-          y: glowY,
+          x: ringX,
+          y: ringY,
           translateX: '-50%',
           translateY: '-50%',
-          background: `radial-gradient(circle, ${glowColor} 0%, transparent 65%)`,
+          background: `radial-gradient(circle, ${glowColor} 0%, transparent 68%)`,
         }}
-        className="fixed top-0 left-0 w-[420px] h-[420px] rounded-full filter blur-2xl pointer-events-none"
+        className="fixed top-0 left-0 w-[380px] h-[380px] rounded-full blur-3xl"
+      />
+
+      {/* Outer cursor ring */}
+      <motion.div
+        style={{
+          x: ringX,
+          y: ringY,
+          translateX: '-50%',
+          translateY: '-50%',
+          borderColor: glowColor,
+        }}
+        animate={{
+          width: hovering ? 60 : 34,
+          height: hovering ? 60 : 34,
+          opacity: hovering ? 0.9 : 0.55,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 25,
+        }}
+        className="fixed top-0 left-0 rounded-full border"
+      />
+
+      {/* Inner glowing dot */}
+      <motion.div
+        style={{
+          x: mouseX,
+          y: mouseY,
+          translateX: '-50%',
+          translateY: '-50%',
+          backgroundColor: glowColor.replace(
+            /[\d.]+\)$/,
+            '1)'
+          ),
+        }}
+        animate={{
+          width: hovering ? 8 : 6,
+          height: hovering ? 8 : 6,
+          scale: hovering ? 1.2 : 1,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 400,
+          damping: 20,
+        }}
+        className="fixed top-0 left-0 rounded-full"
       />
     </div>
   );
